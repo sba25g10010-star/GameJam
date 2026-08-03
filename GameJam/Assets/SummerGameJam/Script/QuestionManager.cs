@@ -37,7 +37,7 @@ public class QuestionManager : MonoBehaviour
     /// </summary>
     public void NextTurn()
     {
-        if (isGameOver) return;
+        if (isGameOver || isMessagePanelOpen) return;
         if (questionDatabase.Count == 0) return;
 
         int randomIndex = Random.Range(0, questionDatabase.Count);
@@ -47,9 +47,9 @@ public class QuestionManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 食べるボタンが押された（成否に関わらず次は進む）
+    /// AIに聞くボタンが押された
     /// </summary>
-    public void OnEatButton()
+    public void OnAIButton()
     {
         if (isGameOver || isMessagePanelOpen || currentQuestion == null) return;
 
@@ -67,8 +67,7 @@ public class QuestionManager : MonoBehaviour
 
             if (messagePanel == null)
             {
-                Debug.LogWarning("一言パネルが設定されていないため、次の問題へ進みます。");
-                NextTurn();
+                Debug.LogError("MessagePanelが設定されていません。次の問題には進みません。");
                 return;
             }
 
@@ -78,25 +77,14 @@ public class QuestionManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 一言パネルのボタンが押された
+    /// 一言パネルの「次へ」ボタンが押された
     /// </summary>
-    public void OnMessagePanelButton()
+    public void OnNextButton()
     {
         if (isGameOver || !isMessagePanelOpen) return;
 
         messagePanel.SetActive(false);
         isMessagePanelOpen = false;
-        NextTurn();
-    }
-
-    /// <summary>
-    /// スルーボタンが押された
-    /// </summary>
-    public void OnPassButton()
-    {
-        if (isGameOver || isMessagePanelOpen) return;
-
-        Debug.Log("スルーして次の問題へ");
         NextTurn();
     }
 }
