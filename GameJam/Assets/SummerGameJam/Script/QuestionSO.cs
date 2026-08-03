@@ -7,4 +7,5 @@ public class QuestionSO : ScriptableObject
 
     [Range(0,100)]
     public int failureChance; //問題が失敗する確率
+    public TeacherSO correctTeacher;
 }
