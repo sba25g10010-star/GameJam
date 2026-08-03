@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bdaa38ce3c2f674bafd7d73520d8e44, type: 3}
-  m_Name: GlassTeacher
+  m_Name: PochaTeacher
   m_EditorClassIdentifier: Assembly-CSharp::TeacherSO
-  teacherName: "\u6885\u6CA2\u5148\u751F"
-  hobby: "\u4ECA\u91CE"
-  teacherImage: {fileID: 21300000, guid: 7f02a6d44fb7c324db41ef4d7a0d15fb, type: 3}
+  teacherName: "\u307D\u3063\u3061\u3083\u308A\u5148\u751F"
+  hobby: 
+  teacherImage: {fileID: 21300000, guid: 6fea7524ef99fa047a15af8a0b382123, type: 3}
   stlessUp: 0
   efficiencyUp: 0
   efficiencyDown: 0
