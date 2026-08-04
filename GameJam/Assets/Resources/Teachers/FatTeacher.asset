@@ -15,8 +15,8 @@ MonoBehaviour:
   teacherName: "\u8C37\u53E3"
   hobby: "PC\u95A2\u9023"
   teacherImage: {fileID: 0}
-  correctStlessUp: 20
+  correctStlessUp: 0
   missStlessUp: 30
   efficiencyUp: 25
-  efficiencyDown: -20
+  efficiencyDown: -25
   intimacy: 50

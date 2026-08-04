@@ -18,5 +18,5 @@ MonoBehaviour:
   correctStlessUp: 0
   missStlessUp: 100
   efficiencyUp: 25
-  efficiencyDown: 20
+  efficiencyDown: -25
   intimacy: 0

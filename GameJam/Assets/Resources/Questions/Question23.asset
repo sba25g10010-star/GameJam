@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c17064f750f7ee64ea5329671c7fcee2, type: 3}
   m_Name: Question23
   m_EditorClassIdentifier: Assembly-CSharp::QuestionSO
-  questionName: 
-  failureChance: 0
+  questionName: "\u300C\u4E86\u89E3\u3057\u307E\u3057\u305F\u300D\u3092\u76EE\u4E0A\u306E\u4EBA\u306B\u9001\u3063\u3066\u5927\u4E08\u592B\uFF1F "
+  failureChance: 10
   correctTeacher: {fileID: 0}
-  correctAIComment: 
-  missAIComment: 
-  correctTeacherComment: 
-  missTeacherComment: 
+  correctAIComment: "\u5931\u793C\u306B\u306A\u308A\u306B\u304F\u3044\u8868\u73FE\u3092\u6559\u3048\u3066\u304F\u308C\u305F\u3002 "
+  missAIComment: "\u72B6\u6CC1\u306B\u5408\u308F\u306A\u3044\u307B\u3069\u5805\u3044\u6587\u7AE0\u306B\u306A\u3063\u305F\u3002 "
+  correctTeacherComment: "\u5148\u751F\u306B\u306F\u300E\u627F\u77E5\u3057\u307E\u3057\u305F\u300F\u304C\u7121\u96E3\u3060\u3088\u3002 "
+  missTeacherComment: "\u666E\u901A\u306B\u4F1D\u308F\u308C\u3070\u3044\u3044\u3093\u3058\u3083\u306A\u3044\u304B\uFF1F "

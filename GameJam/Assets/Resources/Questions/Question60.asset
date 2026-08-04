@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c17064f750f7ee64ea5329671c7fcee2, type: 3}
   m_Name: Question60
   m_EditorClassIdentifier: Assembly-CSharp::QuestionSO
-  questionName: 
-  failureChance: 0
+  questionName: "\u30B2\u30FC\u30E0\u306E\u51E6\u7406\u304C\u30B9\u30DE\u30DB\u3060\u3051\u91CD\u3044\u3002 "
+  failureChance: 55
   correctTeacher: {fileID: 0}
-  correctAIComment: 
-  missAIComment: 
-  correctTeacherComment: 
-  missTeacherComment: 
+  correctAIComment: "Profiler\u3067\u91CD\u3044\u51E6\u7406\u3092\u898B\u3064\u3051\u305F\u3002 "
+  missAIComment: "PC\u306E\u30B9\u30DA\u30C3\u30AF\u3060\u3051\u3092\u57FA\u6E96\u306B\u8003\u3048\u3066\u3057\u307E\u3063\u305F\u3002 "
+  correctTeacherComment: "\u5B9F\u6A5F\u3067Profiler\u3092\u4F7F\u3063\u3066\u30DC\u30C8\u30EB\u30CD\u30C3\u30AF\u3092\u63A2\u305D\u3046\u3002 "
+  missTeacherComment: "\u30B9\u30DE\u30DB\u3092\u65B0\u3057\u304F\u3059\u308C\u3070\u3044\u3044\u3002 "
