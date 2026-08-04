@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Question3
   m_EditorClassIdentifier: Assembly-CSharp::QuestionSO
   questionName: Error3
-  failureChance: 0
-  correctTeacher: {fileID: 11400000, guid: d2e10676e58efbe4bbba59812230ce97, type: 2}
+  failureChance: 70
+  correctTeacher: {fileID: 0}
   correctAIComment: 
   missAIComment: 
   correctTeacherComment: 
