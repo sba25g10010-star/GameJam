@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bdaa38ce3c2f674bafd7d73520d8e44, type: 3}
   m_Name: OidTeacher
   m_EditorClassIdentifier: Assembly-CSharp::TeacherSO
-  teacherName: e
-  hobby: f
+  teacherName: "\u7530\u4E2D"
+  hobby: "\u6570\u5B66\u3001\u6B74\u53F2"
   teacherImage: {fileID: 0}
-  stlessUp: 0
-  efficiencyUp: 0
-  efficiencyDown: 0
-  intimacy: 0
+  correctStlessUp: 30
+  missStlessUp: 40
+  efficiencyUp: 25
+  efficiencyDown: 20
+  intimacy: 25
