@@ -116,7 +116,8 @@ public class QuestionManager : MonoBehaviour
         }
 
         int stressChange = aiFailed ? aiFailureStress : -aiSuccessRecovery;
-        SetAIResultMessage(aiFailed, stressChange);
+        string aiResultMessage = aiFailed ? aiFailureMessage : aiSuccessMessage;
+        SetResultMessage(aiFailed, aiResultMessage, stressChange);
 
         if (ChangeStress(stressChange)) return;
 
@@ -127,43 +128,69 @@ public class QuestionManager : MonoBehaviour
     /// </summary>
     public void OnTeacherButton()
     {
-        if (isGameOver) return;
-        // 下の3人をランダムで入れ替える
-        teacherManager.ShowRandomTeachers();
-        // 先生をランダムで変更
-        teacherManager.ChengeRandomTeacher();
+        if (isGameOver || isMessagePanelOpen || currentQuestion == null) return;
 
-
-        if (teacherManager.IsCorrectTeacher(currentQuestion))
+        if (teacherManager == null)
         {
-            Debug.Log("先生の得意な問題なので成功！");
-            NextTurn();
+            Debug.LogError("TeacherManagerが設定されていません。", this);
             return;
         }
 
-        float randomValue = Random.Range(0f, 100f);
-
-        if (randomValue <= currentQuestion.failureChance)
+        TeacherSO selectedTeacher = teacherManager.GetCurrentTeacher();
+        if (selectedTeacher == null)
         {
-            Debug.Log(
-                $"先生が失敗！確率 {currentQuestion.failureChance}% に対し " +
-                $"{randomValue:F1} を引いた"
-            );
+            Debug.LogError("現在の先生が設定されていません。", this);
+            return;
+        }
 
-            isGameOver = true;
-            gameUI.ShowGameOverUI();
+        bool teacherFailed = false;
+        bool isWeakQuestion = selectedTeacher.IsWeakQuestion(currentQuestion);
+
+        if (isWeakQuestion)
+        {
+            teacherFailed = true;
+            Debug.Log($"{selectedTeacher.teacherName}先生の苦手な問題なので必ず失敗！");
+        }
+        else if (teacherManager.IsCorrectTeacher(currentQuestion))
+        {
+            Debug.Log($"{selectedTeacher.teacherName}先生の得意な問題なので成功！");
         }
         else
         {
-            Debug.Log(
-                $"先生の不得意な問題だが成功！確率 " +
-                $"{currentQuestion.failureChance}% に対し " +
-                $"{randomValue:F1} で回避"
-            );
+            int randomValue = Random.Range(0, 100);
+            teacherFailed = randomValue < currentQuestion.failureChance;
 
-            NextTurn();
-
+            Debug.Log(teacherFailed
+                ? $"{selectedTeacher.teacherName}先生が失敗！確率 {currentQuestion.failureChance}% に対し {randomValue}を引いた"
+                : $"{selectedTeacher.teacherName}先生が成功！確率 {currentQuestion.failureChance}% に対し {randomValue}で回避");
         }
+
+        int stressIncrease = Mathf.Max(0,
+            teacherFailed ? selectedTeacher.missStlessUp : selectedTeacher.correctStlessUp);
+
+        string resultMessage = isWeakQuestion
+            ? "苦手な問題だったので失敗した！"
+            : teacherFailed
+                ? currentQuestion.missTeacherComment
+                : currentQuestion.correctTeacherComment;
+
+        if (string.IsNullOrWhiteSpace(resultMessage))
+        {
+            resultMessage = teacherFailed
+                ? $"{selectedTeacher.teacherName}先生が失敗した！"
+                : $"{selectedTeacher.teacherName}先生が成功した！";
+        }
+
+        SetResultMessage(teacherFailed, resultMessage, stressIncrease);
+        bool reachedMaxStress = ChangeStress(stressIncrease);
+
+        // 判定が終わってから、次のターンで使う先生へ切り替える。
+        teacherManager.ShowRandomTeachers();
+        teacherManager.ChengeRandomTeacher();
+
+        if (reachedMaxStress) return;
+
+        OpenMessagePanel();
     }
 
     /// <summary>
@@ -225,7 +252,7 @@ public class QuestionManager : MonoBehaviour
         messagePanel.SetActive(true);
     }
 
-    private void SetAIResultMessage(bool aiFailed, int stressChange)
+    private void SetResultMessage(bool failed, string resultMessage, int stressChange)
     {
         if (messageText == null)
         {
@@ -233,12 +260,11 @@ public class QuestionManager : MonoBehaviour
             return;
         }
 
-        string resultMessage = aiFailed ? aiFailureMessage : aiSuccessMessage;
         messageText.text = $"{resultMessage}\nストレス {stressChange:+#;-#;0}%";
 
         if (messagePanelImage != null)
         {
-            messagePanelImage.color = aiFailed ? aiFailurePanelColor : aiSuccessPanelColor;
+            messagePanelImage.color = failed ? aiFailurePanelColor : aiSuccessPanelColor;
         }
     }
 

@@ -15,3 +15,7 @@ MonoBehaviour:
   questionName: a
   failureChance: 14
   correctTeacher: {fileID: 11400000, guid: d2e10676e58efbe4bbba59812230ce97, type: 2}
+  correctAIComment: 
+  missAIComment: 
+  correctTeacherComment: 
+  missTeacherComment: 
