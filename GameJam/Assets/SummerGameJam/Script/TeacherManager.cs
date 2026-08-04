@@ -25,11 +25,21 @@ public class TeacherManager : MonoBehaviour
         {
             if (teacher == null) continue;
 
-            // 上に表示中の先生は候補から外す
+            // 上の先生と同じデータ、または同じ名前の先生は除外
             if (teacher == currentTeacher) continue;
 
-            // 同じTeacherSOを重複登録しない
-            if (teacherList.Contains(teacher)) continue;
+            if (teacher.teacherName == currentTeacher.teacherName)
+            {
+                continue;
+            }
+
+            // 下の候補にも同じ名前の先生を入れない
+            bool alreadyExists = teacherList.Exists(
+                registeredTeacher =>
+                    registeredTeacher.teacherName == teacher.teacherName
+            );
+
+            if (alreadyExists) continue;
 
             teacherList.Add(teacher);
         }
@@ -37,7 +47,7 @@ public class TeacherManager : MonoBehaviour
         if (teacherList.Count < 3)
         {
             Debug.LogWarning(
-                "上の先生以外に、別々の先生を3人以上登録してください"
+                "上の先生を除いて、名前の違う先生を3人以上登録してください"
             );
             return;
         }
@@ -49,32 +59,33 @@ public class TeacherManager : MonoBehaviour
             int randomIndex = Random.Range(0, teacherList.Count);
 
             selectedTeachers[i] = teacherList[randomIndex];
-
-            // 選ばれた先生は候補から削除
             teacherList.RemoveAt(randomIndex);
         }
 
         currentSlotTeachers = selectedTeachers;
-        teacherUI.UpdateTeacherSlots(selectedTeachers);
+        teacherUI.UpdateTeacherSlots(currentSlotTeachers);
+
+        Debug.Log($"上：{currentTeacher.teacherName}");
+
+        for (int i = 0; i < currentSlotTeachers.Length; i++)
+        {
+            Debug.Log($"下{i + 1}：{currentSlotTeachers[i].teacherName}");
+        }
     }
     /// <summary>
     /// 下に表示されている3人から、1人をランダムで選ぶ
     /// </summary>
     public void SelectRandomSlotTeacher()
     {
-        if (currentSlotTeachers == null || currentSlotTeachers.Length == 0)
-        {
-            Debug.LogWarning("下の先生が設定されていません");
-            return;
-        }
-
         int randomIndex = Random.Range(0, currentSlotTeachers.Length);
 
         TeacherSO selectedTeacher = currentSlotTeachers[randomIndex];
 
-        SetCurrentTeacher(selectedTeacher);
+        // 先に上を変更
+        currentTeacher = selectedTeacher;
+        teacherUI.UpdateTeacherUI(currentTeacher);
 
-        // 上に選ばれた先生を除いて、下3人を再抽選
+        // 新しい上の先生を除外して下3人を再抽選
         ShowRandomTeachers();
     }
     public void ChengeRandomTeacher()

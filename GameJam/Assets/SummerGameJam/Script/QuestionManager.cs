@@ -117,11 +117,8 @@ public class QuestionManager : MonoBehaviour
     public void OnTeacherButton()
     {
         if (isGameOver || isMessagePanelOpen || currentQuestion == null) return;
-        // 先生をランダムで変更
-        teacherManager.ChengeRandomTeacher();
-        // 下の3人をランダムで入れ替える
-        teacherManager.ShowRandomTeachers();
-        if (teacherManager.IsCorrectTeacher(currentQuestion))
+      
+        if (teacherManager == null)
         {
             Debug.LogError("TeacherManagerが設定されていません。", this);
             return;
@@ -164,8 +161,8 @@ public class QuestionManager : MonoBehaviour
         bool reachedMaxStress = ChangeStress(stressIncrease);
 
         // 判定後、次のターンで使う先生へ切り替える。
-        teacherManager.ShowRandomTeachers();
         teacherManager.ChengeRandomTeacher();
+        teacherManager.ShowRandomTeachers();
 
         if (reachedMaxStress) return;
 
@@ -182,6 +179,7 @@ public class QuestionManager : MonoBehaviour
         teacherManager.SelectRandomSlotTeacher();
         hasChangedTeacher = true;
         changeTeacherButton.interactable = false;
+        return;
     }
     /// <summary>
     /// 次の問題になったとき、先生変更ボタンを再使用可能にする
@@ -193,6 +191,7 @@ public class QuestionManager : MonoBehaviour
         {
             changeTeacherButton.interactable = true;
         }
+        return;
     }
     /// <summary>
     /// 一言パネルの「次へ」ボタンが押された
