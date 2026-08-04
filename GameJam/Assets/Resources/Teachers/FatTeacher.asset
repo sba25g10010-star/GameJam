@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bdaa38ce3c2f674bafd7d73520d8e44, type: 3}
+  m_Name: FatTeacher
+  m_EditorClassIdentifier: Assembly-CSharp::TeacherSO
+  teacherName: "\u8C37\u53E3"
+  hobby: "PC\u95A2\u9023"
+  teacherImage: {fileID: 21300000, guid: bfdbeff1796d8974ca56d5abeda26cf3, type: 3}
+  correctStlessUp: 0
+  missStlessUp: 30
+  efficiencyUp: 25
+  efficiencyDown: 25
+  intimacy: 50
