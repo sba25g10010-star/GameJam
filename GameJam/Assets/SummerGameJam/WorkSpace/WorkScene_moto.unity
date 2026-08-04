@@ -131,6 +131,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -33.949463
       objectReference: {fileID: 0}
+    - target: {fileID: 1852865600062245468, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+      propertyPath: aiFailureMessage
+      value: "\u5931\u6557\uFF01"
+      objectReference: {fileID: 0}
+    - target: {fileID: 1852865600062245468, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+      propertyPath: aiSuccessMessage
+      value: "\u6210\u529F\uFF01"
+      objectReference: {fileID: 0}
     - target: {fileID: 1976079004667291227, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -173,7 +181,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2135040276520484328, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6196476470600796701, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
       propertyPath: m_Name

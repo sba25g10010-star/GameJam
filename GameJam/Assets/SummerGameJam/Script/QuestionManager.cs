@@ -10,11 +10,13 @@ public class QuestionManager : MonoBehaviour
     private List<QuestionSO> questionDatabase = new List<QuestionSO>();
     private QuestionSO currentQuestion;
 
+    private bool teacherFailed = false;
     private bool isGameOver = false;
     [Header("先生管理クラスの参照")]
     [SerializeField] private TeacherManager teacherManager;
 
-
+    [Header("コメント管理クラスの参照")]
+    [SerializeField] private CommentMaager commentMaager;
     private bool isMessagePanelOpen = false;
     [Header("先生変更ボタン")]
     [SerializeField] private Button changeTeacherButton;
@@ -40,8 +42,8 @@ public class QuestionManager : MonoBehaviour
     [SerializeField, Min(0)] private int aiSuccessRecovery = 20;
 
     [Header("AI結果メッセージ")]
-    [SerializeField] private string aiFailureMessage = "AIが失敗した！";
-    [SerializeField] private string aiSuccessMessage = "AIが成功した！";
+    [SerializeField] private string FailureMessage = "失敗！";
+    [SerializeField] private string SuccessMessage = "成功！";
     [SerializeField] private Color aiFailurePanelColor = new Color32(217, 51, 51, 242);
     [SerializeField] private Color aiSuccessPanelColor = new Color32(51, 191, 77, 242);
     private int currentStress;
@@ -132,7 +134,7 @@ public class QuestionManager : MonoBehaviour
         }
 
         // QuestionSOのCorrect Teacherに登録された先生だけが成功する。
-        bool teacherFailed = !teacherManager.IsCorrectTeacher(currentQuestion);
+        teacherFailed = !teacherManager.IsCorrectTeacher(currentQuestion);
 
         if (teacherFailed)
         {
@@ -146,19 +148,19 @@ public class QuestionManager : MonoBehaviour
         int stressIncrease = Mathf.Max(0,
             teacherFailed ? selectedTeacher.missStlessUp : selectedTeacher.correctStlessUp);
 
-        string resultMessage = teacherFailed
-            ? currentQuestion.missTeacherComment
-            : currentQuestion.correctTeacherComment;
+        // string resultMessage = teacherFailed
+        //     ? currentQuestion.missTeacherComment
+        //     : currentQuestion.correctTeacherComment;
 
-        if (string.IsNullOrWhiteSpace(resultMessage))
-        {
-            resultMessage = teacherFailed
-                ? $"{selectedTeacher.teacherName}先生が失敗した！"
-                : $"{selectedTeacher.teacherName}先生が成功した！";
-        }
+        // if (string.IsNullOrWhiteSpace(resultMessage))
+        // {
+        //     resultMessage = teacherFailed
+        //         ? $"{selectedTeacher.teacherName}先生が失敗した！"
+        //         : $"{selectedTeacher.teacherName}先生が成功した！";
+        // }
 
-        SetTeacherResultMessage(teacherFailed, resultMessage, stressIncrease);
         bool reachedMaxStress = ChangeStress(stressIncrease);
+        SetTeacherResultMessage(teacherFailed, stressIncrease);
 
         // 判定後、次のターンで使う先生へ切り替える。
         teacherManager.ChengeRandomTeacher();
@@ -249,8 +251,24 @@ public class QuestionManager : MonoBehaviour
             Debug.LogError("MessageTextが設定されていません。", this);
             return;
         }
-        string resultMessage = aiFailed ? aiFailureMessage : aiSuccessMessage;
-        messageText.text = $"{resultMessage}\nストレス {stressChange:+#;-#;0}%";
+
+        string resultMessage = aiFailed ? FailureMessage : SuccessMessage;
+
+        string comment = "";
+
+        if (commentMaager != null)
+        {
+            comment = commentMaager.GetAIComment(currentQuestion, aiFailed);
+        }
+
+        if (!string.IsNullOrEmpty(comment))
+        {
+            messageText.text = $"{resultMessage}\n{comment}\nストレス {stressChange:+#;-#;0}%";
+        }
+        else
+        {
+            messageText.text = $"{resultMessage}\nストレス {stressChange:+#;-#;0}%";
+        }
 
         if (messagePanelImage != null)
         {
@@ -258,21 +276,36 @@ public class QuestionManager : MonoBehaviour
         }
     }
 
-    private void SetTeacherResultMessage(bool teacherFailed, string resultMessage, int stressIncrease)
+    private void SetTeacherResultMessage(bool teacherFailed, int stressChange)
     {
         if (messageText == null)
         {
-            Debug.LogError("MessageTextが設定されていません。", this);
+            Debug.Log("messageTextがnullです");
             return;
         }
 
-        messageText.text = $"{resultMessage}\nストレス +{stressIncrease}%";
+        string resultMessage = teacherFailed ? FailureMessage : SuccessMessage;
+
+        string comment = "";
+        if (commentMaager != null)
+        {
+            comment = commentMaager.GetTeacherComment(currentQuestion, teacherFailed);
+        }
+
+        Debug.Log(comment);
+        if (!string.IsNullOrEmpty(comment))
+        {
+            messageText.text = $"{resultMessage}\n{comment}\nストレス {stressChange:+#;-#;0}%";
+        }
+        else
+        {
+            messageText.text = $"{resultMessage}\nストレス {stressChange:+#;-#;0}%";
+        }
 
         if (messagePanelImage != null)
         {
             messagePanelImage.color = teacherFailed ? aiFailurePanelColor : aiSuccessPanelColor;
         }
     }
-
 
 }
