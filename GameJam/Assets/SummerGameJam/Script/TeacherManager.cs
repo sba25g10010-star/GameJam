@@ -57,6 +57,26 @@ public class TeacherManager : MonoBehaviour
         currentSlotTeachers = selectedTeachers;
         teacherUI.UpdateTeacherSlots(selectedTeachers);
     }
+    /// <summary>
+    /// 下に表示されている3人から、1人をランダムで選ぶ
+    /// </summary>
+    public void SelectRandomSlotTeacher()
+    {
+        if (currentSlotTeachers == null || currentSlotTeachers.Length == 0)
+        {
+            Debug.LogWarning("下の先生が設定されていません");
+            return;
+        }
+
+        int randomIndex = Random.Range(0, currentSlotTeachers.Length);
+
+        TeacherSO selectedTeacher = currentSlotTeachers[randomIndex];
+
+        SetCurrentTeacher(selectedTeacher);
+
+        // 上に選ばれた先生を除いて、下3人を再抽選
+        ShowRandomTeachers();
+    }
     public void ChengeRandomTeacher()
     {
         if (teachers == null || teachers.Length == 0)
@@ -69,6 +89,7 @@ public class TeacherManager : MonoBehaviour
         teacherUI.UpdateTeacherUI(currentTeacher);
         Debug.Log($"{currentTeacher.teacherName}に変更しました");
     }
+
     /// <summary>
     /// 現在選ばれている先生を取得する
     /// </summary>
