@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bdaa38ce3c2f674bafd7d73520d8e44, type: 3}
-  m_Name: GlassTeacher
+  m_Name: FatTeacher
   m_EditorClassIdentifier: Assembly-CSharp::TeacherSO
-  teacherName: "\u6885\u6FA4"
-  hobby: "\u56FD\u8A9E"
+  teacherName: "\u8C37\u53E3"
+  hobby: "PC\u95A2\u9023"
   teacherImage: {fileID: 0}
   correctStlessUp: 0
-  missStlessUp: 25
+  missStlessUp: 30
   efficiencyUp: 25
   efficiencyDown: -25
-  intimacy: 75
+  intimacy: 50
