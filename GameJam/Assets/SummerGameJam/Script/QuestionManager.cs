@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public class QuestionManager : MonoBehaviour
@@ -11,9 +12,14 @@ public class QuestionManager : MonoBehaviour
     [Header("先生管理クラスの参照")]
     [SerializeField] private TeacherManager teacherManager;
 
+    private bool isMessagePanelOpen = false;
 
     [Header("UIクラスの参照")]
     [SerializeField] private QuestionUI gameUI;
+    [SerializeField] private GameObject messagePanel;
+
+    [Header("画面遷移")]
+    [SerializeField] private string resultSceneName = "Result";
 
     void Awake()
     {
@@ -23,6 +29,11 @@ public class QuestionManager : MonoBehaviour
 
     void Start()
     {
+        if (messagePanel != null)
+        {
+            messagePanel.SetActive(false);
+        }
+
         NextTurn();
     }
 
@@ -31,7 +42,7 @@ public class QuestionManager : MonoBehaviour
     /// </summary>
     public void NextTurn()
     {
-        if (isGameOver) return;
+        if (isGameOver || isMessagePanelOpen) return;
         if (questionDatabase.Count == 0) return;
 
         int randomIndex = Random.Range(0, questionDatabase.Count);
@@ -41,11 +52,11 @@ public class QuestionManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 食べるボタンが押された（成否に関わらず次は進む）
+    /// AIに聞くボタンが押された
     /// </summary>
-    public void OnEatButton()
+    public void OnAIButton()
     {
-        if (isGameOver) return;
+        if (isGameOver || isMessagePanelOpen || currentQuestion == null) return;
 
 
         float randomValue = Random.Range(0f, 100f);
@@ -58,16 +69,20 @@ public class QuestionManager : MonoBehaviour
             );
 
             isGameOver = true;
-            gameUI.ShowGameOverUI();
+            SceneManager.LoadScene(resultSceneName);
         }
         else
         {
-            Debug.Log(
-                $"成功！確率 {currentQuestion.failureChance}% に対し " +
-                $"{randomValue:F1} で回避"
-            );
+            Debug.Log($"成功！確率 {currentQuestion.failureChance}% に対し {randomValue:F1} で回避");
 
-            NextTurn();
+            if (messagePanel == null)
+            {
+                Debug.LogError("MessagePanelが設定されていません。次の問題には進みません。");
+                return;
+            }
+
+            isMessagePanelOpen = true;
+            messagePanel.SetActive(true);
         }
     }
     /// <summary>
@@ -105,19 +120,22 @@ public class QuestionManager : MonoBehaviour
             );
 
             NextTurn();
+
         }
     }
 
     /// <summary>
-    /// スルーボタンが押された
+    /// 一言パネルの「次へ」ボタンが押された
     /// </summary>
-    public void OnPassButton()
+    public void OnNextButton()
     {
-        if (isGameOver) return;
+        if (isGameOver || !isMessagePanelOpen) return;
 
-        Debug.Log("スルーして次の問題へ");
+        messagePanel.SetActive(false);
+        isMessagePanelOpen = false;
         NextTurn();
     }
 
 
 }
+
