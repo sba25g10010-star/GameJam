@@ -23,6 +23,7 @@ public class QuestionManager : MonoBehaviour
     [SerializeField] private Image messagePanelImage;
     [SerializeField] private TextMeshProUGUI messageText;
     [SerializeField] private TextMeshProUGUI stressPercentageText;
+    [SerializeField] private TextMeshProUGUI workPercentageText;
 
     [Header("ストレスゲージ")]
     [SerializeField] private StressGauge stressGauge;
@@ -32,6 +33,12 @@ public class QuestionManager : MonoBehaviour
     [Tooltip("AIが成功したときに減るストレス値")]
     [SerializeField, Min(0)] private int aiSuccessRecovery = 20;
 
+    [Header("作業効率ゲージ")]
+    [SerializeField] private WorkGauge workGauge;
+    [SerializeField, Range(0, 100)] private int initialWorkEfficiency = 75;
+    [SerializeField, Min(0)] private int aiSuccessEfficiency = 25;
+    [SerializeField, Min(0)] private int aiFailureEfficiency = 25;
+
     [Header("AI結果メッセージ")]
     [SerializeField] private string aiFailureMessage = "AIが失敗した！";
     [SerializeField] private string aiSuccessMessage = "AIが成功した！";
@@ -39,6 +46,7 @@ public class QuestionManager : MonoBehaviour
     [SerializeField] private Color aiSuccessPanelColor = new Color32(51, 191, 77, 242);
 
     private int currentStress;
+    private int currentWorkEfficiency;
 
     [Header("画面遷移")]
     [SerializeField] private string resultSceneName = "Result";
@@ -66,8 +74,15 @@ public class QuestionManager : MonoBehaviour
             stressGauge = FindAnyObjectByType<StressGauge>();
         }
 
+        if (workGauge == null)
+        {
+            workGauge = FindAnyObjectByType<WorkGauge>();
+        }
+
         currentStress = 0;
         UpdateStressGauge();
+        currentWorkEfficiency = Mathf.Clamp(initialWorkEfficiency, 0, 100);
+        UpdateWorkGauge();
 
         if (messagePanel != null)
         {
@@ -116,7 +131,9 @@ public class QuestionManager : MonoBehaviour
         }
 
         int stressChange = aiFailed ? aiFailureStress : -aiSuccessRecovery;
-        SetAIResultMessage(aiFailed, stressChange);
+        int workEfficiencyChange = aiFailed ? -aiFailureEfficiency : aiSuccessEfficiency;
+        SetAIResultMessage(aiFailed, stressChange, workEfficiencyChange);
+        ChangeWorkEfficiency(workEfficiencyChange);
 
         if (ChangeStress(stressChange)) return;
 
@@ -168,7 +185,15 @@ public class QuestionManager : MonoBehaviour
                 : $"{selectedTeacher.teacherName}先生が成功した！";
         }
 
-        SetTeacherResultMessage(teacherFailed, resultMessage, stressIncrease);
+        int workEfficiencyChange = teacherFailed
+            ? -Mathf.Max(0, selectedTeacher.efficiencyDown)
+            : Mathf.Max(0, selectedTeacher.efficiencyUp);
+        SetTeacherResultMessage(
+            teacherFailed,
+            resultMessage,
+            stressIncrease,
+            workEfficiencyChange);
+        ChangeWorkEfficiency(workEfficiencyChange);
         bool reachedMaxStress = ChangeStress(stressIncrease);
 
         // 判定後、次のターンで使う先生へ切り替える。
@@ -227,6 +252,31 @@ public class QuestionManager : MonoBehaviour
         }
     }
 
+    private void ChangeWorkEfficiency(int amount)
+    {
+        currentWorkEfficiency = Mathf.Clamp(currentWorkEfficiency + amount, 0, 100);
+        UpdateWorkGauge();
+
+        Debug.Log($"作業効率: {currentWorkEfficiency}%");
+    }
+
+    private void UpdateWorkGauge()
+    {
+        if (workGauge == null)
+        {
+            Debug.LogError("WorkGaugeが見つかりません。", this);
+        }
+        else
+        {
+            workGauge.SetEfficiency(currentWorkEfficiency);
+        }
+
+        if (workPercentageText != null)
+        {
+            workPercentageText.text = $"{currentWorkEfficiency}%";
+        }
+    }
+
     private void OpenMessagePanel()
     {
         if (messagePanel == null)
@@ -239,7 +289,7 @@ public class QuestionManager : MonoBehaviour
         messagePanel.SetActive(true);
     }
 
-    private void SetAIResultMessage(bool aiFailed, int stressChange)
+    private void SetAIResultMessage(bool aiFailed, int stressChange, int workEfficiencyChange)
     {
         if (messageText == null)
         {
@@ -250,13 +300,19 @@ public class QuestionManager : MonoBehaviour
         string resultMessage = aiFailed ? aiFailureMessage : aiSuccessMessage;
         messageText.text = $"{resultMessage}\nストレス {stressChange:+#;-#;0}%";
 
+        messageText.text += $"\n作業効率 {workEfficiencyChange:+#;-#;0}%";
+
         if (messagePanelImage != null)
         {
             messagePanelImage.color = aiFailed ? aiFailurePanelColor : aiSuccessPanelColor;
         }
     }
 
-    private void SetTeacherResultMessage(bool teacherFailed, string resultMessage, int stressIncrease)
+    private void SetTeacherResultMessage(
+        bool teacherFailed,
+        string resultMessage,
+        int stressIncrease,
+        int workEfficiencyChange)
     {
         if (messageText == null)
         {
@@ -265,6 +321,8 @@ public class QuestionManager : MonoBehaviour
         }
 
         messageText.text = $"{resultMessage}\nストレス +{stressIncrease}%";
+
+        messageText.text += $"\n作業効率 {workEfficiencyChange:+#;-#;0}%";
 
         if (messagePanelImage != null)
         {

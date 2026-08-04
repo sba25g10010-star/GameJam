@@ -19,6 +19,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 699a8a3bda689d54ba350f18b534940a, type: 2}
   correctStlessUp: 20
   missStlessUp: 40
-  efficiencyUp: 0
-  efficiencyDown: 0
+  efficiencyUp: 25
+  efficiencyDown: 25
   intimacy: 0
