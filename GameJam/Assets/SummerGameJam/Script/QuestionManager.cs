@@ -111,6 +111,8 @@ public class QuestionManager : MonoBehaviour
         int stressChange = aiFailed ? aiFailureStress : -aiSuccessRecovery;
         SetAIResultMessage(aiFailed, stressChange);
         if (ChangeStress(stressChange)) return;
+        teacherManager.ChengeRandomTeacher();
+        teacherManager.ShowRandomTeachers();
         OpenMessagePanel();
     }
     /// <summary>
@@ -119,7 +121,7 @@ public class QuestionManager : MonoBehaviour
     public void OnTeacherButton()
     {
         if (isGameOver || isMessagePanelOpen || currentQuestion == null) return;
-      
+
         if (teacherManager == null)
         {
             Debug.LogError("TeacherManagerが設定されていません。", this);
