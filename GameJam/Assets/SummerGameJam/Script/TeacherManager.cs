@@ -1,13 +1,51 @@
+using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class TeacherManager : MonoBehaviour
 {
     // 現在選ばれている先生
+    [Header("先生一覧")]
+    [SerializeField] private TeacherSO[] teachers;
     [SerializeField] private TeacherSO currentTeacher;
     [SerializeField] private TeacherUI teacherUI;
     private void Start()
     {
+        ChengeRandomTeacher();
         teacherUI.UpdateTeacherUI(currentTeacher);
+    }
+    /// <summary>
+    /// 下の3か所にランダムな先生を表示する
+    /// </summary>
+    public void ShowRandomTeachers()
+    {
+        if (teachers == null || teachers.Length < 3)
+        {
+            Debug.LogWarning("先生を3人以上登録してください");
+            return;
+        }
+        List<TeacherSO> teacherList = new List<TeacherSO>(teachers);
+        TeacherSO[] selectedTeachers = new TeacherSO[3];
+
+        for (int i = 0; i < selectedTeachers.Length; i++)
+        {
+            int randomIndex = Random.Range(0, teacherList.Count);
+            selectedTeachers[i] = teacherList[randomIndex];
+            teacherList.RemoveAt(randomIndex);
+        }
+        teacherUI.UpdateTeacherSlots(selectedTeachers);
+    }
+    public void ChengeRandomTeacher()
+    {
+        if (teachers.Length == 0)
+        {
+            Debug.LogWarning("先生が登録されてません");
+            return;
+        }
+        int randomIndex = Random.Range(0, teachers.Length);
+        currentTeacher = teachers[randomIndex];
+        teacherUI.UpdateTeacherUI(currentTeacher);
+        Debug.Log($"{currentTeacher.teacherName}に変更しました");
     }
     /// <summary>
     /// 現在選ばれている先生を取得する
@@ -16,7 +54,6 @@ public class TeacherManager : MonoBehaviour
     {
         return currentTeacher;
     }
-
     /// <summary>
     /// 現在の先生を変更する
     /// </summary>
@@ -33,8 +70,6 @@ public class TeacherManager : MonoBehaviour
         Debug.Log($"{currentTeacher.teacherName}に変更しました");
         teacherUI.UpdateTeacherUI(currentTeacher);
     }
-
-
     /// <summary>
     /// 現在の先生が問題の得意な先生か判定する
     /// </summary>
@@ -54,4 +89,5 @@ public class TeacherManager : MonoBehaviour
 
         return currentTeacher == question.correctTeacher;
     }
+
 }

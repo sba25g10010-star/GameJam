@@ -14,6 +14,7 @@ public class QuestionManager : MonoBehaviour
     [Header("先生管理クラスの参照")]
     [SerializeField] private TeacherManager teacherManager;
 
+
     private bool isMessagePanelOpen = false;
 
     [Header("UIクラスの参照")]
@@ -127,6 +128,11 @@ public class QuestionManager : MonoBehaviour
     public void OnTeacherButton()
     {
         if (isGameOver) return;
+        // 下の3人をランダムで入れ替える
+        teacherManager.ShowRandomTeachers();
+        // 先生をランダムで変更
+        teacherManager.ChengeRandomTeacher();
+
 
         if (teacherManager.IsCorrectTeacher(currentQuestion))
         {
