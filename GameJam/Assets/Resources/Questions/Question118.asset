@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c17064f750f7ee64ea5329671c7fcee2, type: 3}
+  m_Name: Question118
+  m_EditorClassIdentifier: Assembly-CSharp::QuestionSO
+  questionName: "\u30DA\u30C3\u30C8\u304C\u6025\u306B\u990C\u3092\u98DF\u3079\u306A\u304F\u306A\u3063\u305F\u3002 "
+  failureChance: 95
+  correctTeachers: []
+  correctAIComment: "\u53D7\u8A3A\u306E\u76EE\u5B89\u3092\u8AAC\u660E\u3057\u305F\u3002 "
+  missAIComment: "\u75C5\u6C17\u3092\u65AD\u5B9A\u3057\u3066\u3057\u307E\u3063\u305F\u3002 "
+  correctTeacherComment: 
+  missTeacherComment: "\u7363\u533B\u3055\u3093\u306B\u8A3A\u3066\u3082\u3089\u304A\u3046\u3002 "
