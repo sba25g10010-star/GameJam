@@ -124,7 +124,18 @@ public class TeacherManager : MonoBehaviour
         Debug.Log($"{currentTeacher.teacherName}に変更しました");
         teacherUI.UpdateTeacherUI(currentTeacher);
     }
-    
+    private bool IsSameTeachers(TeacherSO[] newTeachers)
+    {
+        for (int i = 0; i < currentSlotTeachers.Length; i++)
+        {
+            if (currentSlotTeachers[i] != newTeachers[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
     /// <summary>
     /// 現在の先生が問題の得意な先生か判定する
     /// </summary>
@@ -142,9 +153,7 @@ public class TeacherManager : MonoBehaviour
             return false;
         }
 
-        if(question.correctTeachers == null || question.correctTeachers.Count == 0)return false;
-
-        return question.correctTeachers.Contains(currentTeacher);
+        return currentTeacher == question.correctTeacher;
     }
 
 }
