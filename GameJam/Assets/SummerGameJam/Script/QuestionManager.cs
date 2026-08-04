@@ -14,7 +14,8 @@ public class QuestionManager : MonoBehaviour
     [Header("先生管理クラスの参照")]
     [SerializeField] private TeacherManager teacherManager;
 
-
+    [Header("コメント管理クラスの参照")]
+    [SerializeField] private CommentMaager commentMaager;
     private bool isMessagePanelOpen = false;
 
     [Header("UIクラスの参照")]
@@ -33,8 +34,8 @@ public class QuestionManager : MonoBehaviour
     [SerializeField, Min(0)] private int aiSuccessRecovery = 20;
 
     [Header("AI結果メッセージ")]
-    [SerializeField] private string aiFailureMessage = "AIが失敗した！";
-    [SerializeField] private string aiSuccessMessage = "AIが成功した！";
+    [SerializeField] private string FailureMessage = "失敗！";
+    [SerializeField] private string SuccessMessage = "成功！";
     [SerializeField] private Color aiFailurePanelColor = new Color32(217, 51, 51, 242);
     [SerializeField] private Color aiSuccessPanelColor = new Color32(51, 191, 77, 242);
 
@@ -233,8 +234,23 @@ public class QuestionManager : MonoBehaviour
             return;
         }
 
-        string resultMessage = aiFailed ? aiFailureMessage : aiSuccessMessage;
-        messageText.text = $"{resultMessage}\nストレス {stressChange:+#;-#;0}%";
+        string resultMessage = aiFailed ? FailureMessage : SuccessMessage;
+
+        string comment = "";
+
+        if (commentMaager != null)
+        {
+            comment = commentMaager.GetAIComment(currentQuestion, aiFailed);
+        }
+
+        if (!string.IsNullOrEmpty(comment))
+        {
+            messageText.text = $"{resultMessage}\n\n{comment}\nストレス {stressChange:+#;-#;0}%";
+        }
+        else
+        {
+            messageText.text = $"{resultMessage}\nストレス {stressChange:+#;-#;0}%";
+        }
 
         if (messagePanelImage != null)
         {
@@ -242,5 +258,15 @@ public class QuestionManager : MonoBehaviour
         }
     }
 
+    private void SetTeacherResultMessage(bool isFailed)
+    {
+        if(messageText != null) return;
+
+        string comment = "";
+        if(commentMaager != null)
+        {
+            comment = commentMaager.GetTeacherComment(currentQuestion,is)
+        }
+    }
 
 }
