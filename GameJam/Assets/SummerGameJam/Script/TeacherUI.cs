@@ -35,7 +35,7 @@ public class TeacherUI : MonoBehaviour
             if(i<teachers.Length&&teachers[i]!=null)
             {
                 teacherSlotImages[i].sprite=teachers[i].teacherImage;
-                teacherSlotImages[i].gameObject.SetActive(false);
+                
             }
         }
     } 

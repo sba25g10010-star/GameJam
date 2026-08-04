@@ -15,8 +15,10 @@ MonoBehaviour:
   teacherName: e
   hobby: f
   teacherImage: {fileID: 21300000, guid: 42a6cfd7fa70bbf48bb4e1be798002b4, type: 3}
-  correctStlessUp: 0
-  missStlessUp: 0
+  weakQuestions:
+  - {fileID: 11400000, guid: 139645ec7059d5b4db66a9f61ba1d2ae, type: 2}
+  correctStlessUp: 20
+  missStlessUp: 40
   efficiencyUp: 0
   efficiencyDown: 0
   intimacy: 0
