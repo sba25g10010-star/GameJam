@@ -2,13 +2,18 @@ using UnityEngine;
 
 public class CommentMaager : MonoBehaviour
 {
-    void Start()
+    public string GetAIComment(QuestionSO question, bool isFailed)
     {
-        
+        if (question == null) return string.Empty;
+
+        return isFailed ? question.missAIComment : question.correctAIComment;
     }
 
-    void Update()
+    public string GetTeacherComment(QuestionSO question, bool isFailed)
     {
-        
+        Debug.Log("呼ばれた");
+        if (question == null) return string.Empty;
+
+        return isFailed ? question.missTeacherComment : question.correctTeacherComment;
     }
 }

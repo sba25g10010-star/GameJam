@@ -10,6 +10,7 @@ public class QuestionManager : MonoBehaviour
     private List<QuestionSO> questionDatabase = new List<QuestionSO>();
     private QuestionSO currentQuestion;
 
+    private bool teacherFailed = false;
     private bool isGameOver = false;
     [Header("先生管理クラスの参照")]
     [SerializeField] private TeacherManager teacherManager;
@@ -144,7 +145,7 @@ public class QuestionManager : MonoBehaviour
         }
 
         // QuestionSOのCorrect Teacherに登録された先生だけが成功する。
-        bool teacherFailed = !teacherManager.IsCorrectTeacher(currentQuestion);
+        teacherFailed = !teacherManager.IsCorrectTeacher(currentQuestion);
 
         if (teacherFailed)
         {
@@ -158,19 +159,19 @@ public class QuestionManager : MonoBehaviour
         int stressIncrease = Mathf.Max(0,
             teacherFailed ? selectedTeacher.missStlessUp : selectedTeacher.correctStlessUp);
 
-        string resultMessage = teacherFailed
-            ? currentQuestion.missTeacherComment
-            : currentQuestion.correctTeacherComment;
+        // string resultMessage = teacherFailed
+        //     ? currentQuestion.missTeacherComment
+        //     : currentQuestion.correctTeacherComment;
 
-        if (string.IsNullOrWhiteSpace(resultMessage))
-        {
-            resultMessage = teacherFailed
-                ? $"{selectedTeacher.teacherName}先生が失敗した！"
-                : $"{selectedTeacher.teacherName}先生が成功した！";
-        }
+        // if (string.IsNullOrWhiteSpace(resultMessage))
+        // {
+        //     resultMessage = teacherFailed
+        //         ? $"{selectedTeacher.teacherName}先生が失敗した！"
+        //         : $"{selectedTeacher.teacherName}先生が成功した！";
+        // }
 
-        SetTeacherResultMessage(teacherFailed, resultMessage, stressIncrease);
         bool reachedMaxStress = ChangeStress(stressIncrease);
+        SetTeacherResultMessage(teacherFailed, stressIncrease);
 
         // 判定後、次のターンで使う先生へ切り替える。
         teacherManager.ShowRandomTeachers();
@@ -259,7 +260,7 @@ public class QuestionManager : MonoBehaviour
 
         if (!string.IsNullOrEmpty(comment))
         {
-            messageText.text = $"{resultMessage}\n\n{comment}\nストレス {stressChange:+#;-#;0}%";
+            messageText.text = $"{resultMessage}\n{comment}\nストレス {stressChange:+#;-#;0}%";
         }
         else
         {
@@ -272,14 +273,35 @@ public class QuestionManager : MonoBehaviour
         }
     }
 
-    private void SetTeacherResultMessage(bool isFailed)
+    private void SetTeacherResultMessage(bool teacherFailed, int stressChange)
     {
-        if(messageText != null) return;
+        if (messageText == null)
+        {
+            Debug.Log("messageTextがnullです");
+            return;
+        }
+
+        string resultMessage = teacherFailed ? FailureMessage : SuccessMessage;
 
         string comment = "";
-        if(commentMaager != null)
+        if (commentMaager != null)
         {
-            comment = commentMaager.GetTeacherComment(currentQuestion,is)
+            comment = commentMaager.GetTeacherComment(currentQuestion, teacherFailed);
+        }
+
+        Debug.Log(comment);
+        if (!string.IsNullOrEmpty(comment))
+        {
+            messageText.text = $"{resultMessage}\n{comment}\nストレス {stressChange:+#;-#;0}%";
+        }
+        else
+        {
+            messageText.text = $"{resultMessage}\nストレス {stressChange:+#;-#;0}%";
+        }
+
+        if (messagePanelImage != null)
+        {
+            messagePanelImage.color = teacherFailed ? aiFailurePanelColor : aiSuccessPanelColor;
         }
     }
 
