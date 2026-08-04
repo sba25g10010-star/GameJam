@@ -4,7 +4,11 @@ public class TeacherManager : MonoBehaviour
 {
     // 現在選ばれている先生
     [SerializeField] private TeacherSO currentTeacher;
-
+    [SerializeField] private TeacherUI teacherUI;
+    private void Start()
+    {
+        teacherUI.UpdateTeacherUI(currentTeacher);
+    }
     /// <summary>
     /// 現在選ばれている先生を取得する
     /// </summary>
@@ -27,7 +31,9 @@ public class TeacherManager : MonoBehaviour
         currentTeacher = teacher;
 
         Debug.Log($"{currentTeacher.teacherName}に変更しました");
+        teacherUI.UpdateTeacherUI(currentTeacher);
     }
+
 
     /// <summary>
     /// 現在の先生が問題の得意な先生か判定する
