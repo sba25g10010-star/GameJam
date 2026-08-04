@@ -15,7 +15,7 @@ MonoBehaviour:
   questionName: Error3
   failureChance: 70
   correctTeacher: {fileID: 11400000, guid: f1542376cdd5d48438d513fbf724b14f, type: 2}
-  correctAIComment: 
-  missAIComment: 
-  correctTeacherComment: 
-  missTeacherComment: 
+  correctAIComment: "AI\u306E\u6B63\u89E3"
+  missAIComment: "AI\u306E\u5931\u6557"
+  correctTeacherComment: "\u5148\u751F\u306E\u6B63\u89E3"
+  missTeacherComment: "\u5148\u751F\u306E\u5931\u6557"
