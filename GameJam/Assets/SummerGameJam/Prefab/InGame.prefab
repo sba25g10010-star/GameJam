@@ -1115,7 +1115,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -33.949768, y: 0}
+  m_AnchoredPosition: {x: -33.949463, y: 0}
   m_SizeDelta: {x: -72.09965, y: -197.06152}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5589327331772295999
@@ -2459,6 +2459,7 @@ GameObject:
   - component: {fileID: 8949049516354854587}
   - component: {fileID: 699481449739586185}
   - component: {fileID: 8269536723555673499}
+  - component: {fileID: 1621318525547797522}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2494,6 +2495,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestionManager
   teacherManager: {fileID: 8269536723555673499}
+  commentMaager: {fileID: 1621318525547797522}
   changeTeacherButton: {fileID: 3021261558527355115}
   disabledButtonAlpha: 0.5
   gameUI: {fileID: 8949049516354854587}
@@ -2505,8 +2507,8 @@ MonoBehaviour:
   maxStress: 100
   aiFailureStress: 40
   aiSuccessRecovery: 20
-  aiFailureMessage: "AI\u304C\u5931\u6557\u3057\u305F\uFF01"
-  aiSuccessMessage: "AI\u304C\u6210\u529F\u3057\u305F\uFF01"
+  FailureMessage: "\u5931\u6557\uFF01"
+  SuccessMessage: "\u6210\u529F\uFF01"
   aiFailurePanelColor: {r: 0.8509804, g: 0.2, b: 0.2, a: 0.9490196}
   aiSuccessPanelColor: {r: 0.2, g: 0.7490196, b: 0.3019608, a: 0.9490196}
   resultSceneName: Result
@@ -2563,6 +2565,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f1542376cdd5d48438d513fbf724b14f, type: 2}
   currentTeacher: {fileID: 11400000, guid: d2e10676e58efbe4bbba59812230ce97, type: 2}
   teacherUI: {fileID: 699481449739586185}
+--- !u!114 &1621318525547797522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7686065894289643849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 554967973e24e9543bac27e23c8f285b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CommentMaager
 --- !u!1 &8532037837411222668
 GameObject:
   m_ObjectHideFlags: 0
