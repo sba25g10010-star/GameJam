@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TeacherSO
   teacherName: "\u8C37\u53E3"
   hobby: "PC\u95A2\u9023"
-  teacherImage: {fileID: 0}
+  teacherImage: {fileID: 21300000, guid: bfdbeff1796d8974ca56d5abeda26cf3, type: 3}
   correctStlessUp: 0
   missStlessUp: 30
   efficiencyUp: 25
-  efficiencyDown: -25
+  efficiencyDown: 25
   intimacy: 50
