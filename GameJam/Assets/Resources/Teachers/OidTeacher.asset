@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bdaa38ce3c2f674bafd7d73520d8e44, type: 3}
-  m_Name: Teacher 3
+  m_Name: OidTeacher
   m_EditorClassIdentifier: Assembly-CSharp::TeacherSO
-  teacherName: g
-  hobby: h
+  teacherName: e
+  hobby: f
   teacherImage: {fileID: 0}
   stlessUp: 0
   efficiencyUp: 0
