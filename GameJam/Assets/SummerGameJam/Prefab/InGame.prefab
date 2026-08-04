@@ -1066,7 +1066,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1462211240153937092}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1852865600062245468}
+        m_TargetAssemblyTypeName: QuestionManager, Assembly-CSharp
+        m_MethodName: OnChangeTeacherButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2135040276520484328
 GameObject:
   m_ObjectHideFlags: 0
@@ -2482,6 +2494,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestionManager
   teacherManager: {fileID: 8269536723555673499}
+  changeTeacherButton: {fileID: 3021261558527355115}
+  disabledButtonAlpha: 0.5
   gameUI: {fileID: 8949049516354854587}
   messagePanel: {fileID: 2135040276520484328}
   messagePanelImage: {fileID: 4903707267149958927}
