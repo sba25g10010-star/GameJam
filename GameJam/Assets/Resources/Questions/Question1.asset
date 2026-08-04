@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::QuestionSO
   questionName: Error1
   failureChance: 20
-  correctTeacher: {fileID: 0}
+  correctTeacher: {fileID: 11400000, guid: d2b8475ffbcc1684eac804aacb9ca724, type: 2}
   correctAIComment: 
   missAIComment: 
   correctTeacherComment: 
