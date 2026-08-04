@@ -12,13 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bdaa38ce3c2f674bafd7d73520d8e44, type: 3}
   m_Name: GlassTeacher
   m_EditorClassIdentifier: Assembly-CSharp::TeacherSO
-  teacherName: "\u6885\u6CA2"
-  hobby: "\u4ECA\u91CE"
-  teacherImage: {fileID: 21300000, guid: bfdbeff1796d8974ca56d5abeda26cf3, type: 3}
-  weakQuestions:
-  - {fileID: 11400000, guid: 699a8a3bda689d54ba350f18b534940a, type: 2}
-  correctStlessUp: 20
-  missStlessUp: 40
-  efficiencyUp: 0
-  efficiencyDown: 0
-  intimacy: 0
+  teacherName: "\u6885\u6FA4"
+  hobby: "\u56FD\u8A9E"
+  teacherImage: {fileID: 0}
+  correctStlessUp: 0
+  missStlessUp: 25
+  efficiencyUp: 25
+  efficiencyDown: -25
+  intimacy: 75
