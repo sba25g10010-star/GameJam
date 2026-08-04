@@ -123,29 +123,53 @@ public class QuestionManager : MonoBehaviour
         teacherManager.ShowRandomTeachers();
         if (teacherManager.IsCorrectTeacher(currentQuestion))
         {
-            Debug.Log("先生の得意な問題なので成功！");
-            NextTurn();
+            Debug.LogError("TeacherManagerが設定されていません。", this);
             return;
         }
-        float randomValue = Random.Range(0f, 100f);
-        if (randomValue <= currentQuestion.failureChance)
+
+        TeacherSO selectedTeacher = teacherManager.GetCurrentTeacher();
+        if (selectedTeacher == null)
         {
-            Debug.Log(
-                $"先生が失敗！確率 {currentQuestion.failureChance}% に対し " +
-                $"{randomValue:F1} を引いた"
-            );
-            isGameOver = true;
-            gameUI.ShowGameOverUI();
+            Debug.LogError("現在の先生が設定されていません。", this);
+            return;
+        }
+
+        // QuestionSOのCorrect Teacherに登録された先生だけが成功する。
+        bool teacherFailed = !teacherManager.IsCorrectTeacher(currentQuestion);
+
+        if (teacherFailed)
+        {
+            Debug.Log($"{selectedTeacher.teacherName}先生は正解できる先生ではないので失敗！");
         }
         else
         {
-            Debug.Log(
-                $"先生の不得意な問題だが成功！確率 " +
-                $"{currentQuestion.failureChance}% に対し " +
-                $"{randomValue:F1} で回避"
-            );
-            NextTurn();
+            Debug.Log($"{selectedTeacher.teacherName}先生は正解できる先生なので必ず成功！");
         }
+
+        int stressIncrease = Mathf.Max(0,
+            teacherFailed ? selectedTeacher.missStlessUp : selectedTeacher.correctStlessUp);
+
+        string resultMessage = teacherFailed
+            ? currentQuestion.missTeacherComment
+            : currentQuestion.correctTeacherComment;
+
+        if (string.IsNullOrWhiteSpace(resultMessage))
+        {
+            resultMessage = teacherFailed
+                ? $"{selectedTeacher.teacherName}先生が失敗した！"
+                : $"{selectedTeacher.teacherName}先生が成功した！";
+        }
+
+        SetTeacherResultMessage(teacherFailed, resultMessage, stressIncrease);
+        bool reachedMaxStress = ChangeStress(stressIncrease);
+
+        // 判定後、次のターンで使う先生へ切り替える。
+        teacherManager.ShowRandomTeachers();
+        teacherManager.ChengeRandomTeacher();
+
+        if (reachedMaxStress) return;
+
+        OpenMessagePanel();
     }
     /// <summary>
     /// 下3人から先生をランダムで1人選ぶ
@@ -234,4 +258,22 @@ public class QuestionManager : MonoBehaviour
             messagePanelImage.color = aiFailed ? aiFailurePanelColor : aiSuccessPanelColor;
         }
     }
+
+    private void SetTeacherResultMessage(bool teacherFailed, string resultMessage, int stressIncrease)
+    {
+        if (messageText == null)
+        {
+            Debug.LogError("MessageTextが設定されていません。", this);
+            return;
+        }
+
+        messageText.text = $"{resultMessage}\nストレス +{stressIncrease}%";
+
+        if (messagePanelImage != null)
+        {
+            messagePanelImage.color = teacherFailed ? aiFailurePanelColor : aiSuccessPanelColor;
+        }
+    }
+
+
 }
