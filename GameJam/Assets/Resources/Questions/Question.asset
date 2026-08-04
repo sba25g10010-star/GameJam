@@ -15,7 +15,7 @@ MonoBehaviour:
   questionName: a
   failureChance: 0
   correctTeacher: {fileID: 11400000, guid: d2e10676e58efbe4bbba59812230ce97, type: 2}
-  correctAIComment: 
-  missAIComment: 
-  correctTeacherComment: 
-  missTeacherComment: 
+  correctAIComment: "AI\u306E\u6B63\u89E3"
+  missAIComment: "AI\u306E\u5931\u6557"
+  correctTeacherComment: "\u5148\u751F\u306E\u6B63\u89E3"
+  missTeacherComment: "\u5148\u751F\u306E\u5931\u6557"
