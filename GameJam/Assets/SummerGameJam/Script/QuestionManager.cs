@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 public class QuestionManager : MonoBehaviour
@@ -18,6 +20,25 @@ public class QuestionManager : MonoBehaviour
     [Header("UIクラスの参照")]
     [SerializeField] private QuestionUI gameUI;
     [SerializeField] private GameObject messagePanel;
+    [SerializeField] private Image messagePanelImage;
+    [SerializeField] private TextMeshProUGUI messageText;
+    [SerializeField] private TextMeshProUGUI stressPercentageText;
+
+    [Header("ストレスゲージ")]
+    [SerializeField] private StressGauge stressGauge;
+    [SerializeField, Min(1)] private int maxStress = 100;
+    [Tooltip("AIが失敗したときに増えるストレス値")]
+    [SerializeField, Min(0)] private int aiFailureStress = 50;
+    [Tooltip("AIが成功したときに減るストレス値")]
+    [SerializeField, Min(0)] private int aiSuccessRecovery = 20;
+
+    [Header("AI結果メッセージ")]
+    [SerializeField] private string aiFailureMessage = "AIが失敗した！";
+    [SerializeField] private string aiSuccessMessage = "AIが成功した！";
+    [SerializeField] private Color aiFailurePanelColor = new Color32(217, 51, 51, 242);
+    [SerializeField] private Color aiSuccessPanelColor = new Color32(51, 191, 77, 242);
+
+    private int currentStress;
 
     [Header("画面遷移")]
     [SerializeField] private string resultSceneName = "Result";
@@ -30,6 +51,24 @@ public class QuestionManager : MonoBehaviour
 
     void Start()
     {
+        if (messagePanelImage == null && messagePanel != null)
+        {
+            messagePanelImage = messagePanel.GetComponent<Image>();
+        }
+
+        if (messageText == null && messagePanel != null)
+        {
+            messageText = messagePanel.GetComponentInChildren<TextMeshProUGUI>(true);
+        }
+
+        if (stressGauge == null)
+        {
+            stressGauge = FindAnyObjectByType<StressGauge>();
+        }
+
+        currentStress = 0;
+        UpdateStressGauge();
+
         if (messagePanel != null)
         {
             messagePanel.SetActive(false);
@@ -60,31 +99,28 @@ public class QuestionManager : MonoBehaviour
         if (isGameOver || isMessagePanelOpen || currentQuestion == null) return;
 
 
-        float randomValue = Random.Range(0f, 100f);
+        int randomValue = Random.Range(0, 100);
 
-        if (randomValue <= currentQuestion.failureChance)
+        bool aiFailed = randomValue < currentQuestion.failureChance;
+
+        if (aiFailed)
         {
             Debug.Log(
                 $"失敗！確率 {currentQuestion.failureChance}% に対し " +
-                $"{randomValue:F1} を引いた"
+                $"{randomValue} を引いた"
             );
-
-            isGameOver = true;
-            SceneManager.LoadScene(resultSceneName);
         }
         else
         {
-            Debug.Log($"成功！確率 {currentQuestion.failureChance}% に対し {randomValue:F1} で回避");
-
-            if (messagePanel == null)
-            {
-                Debug.LogError("MessagePanelが設定されていません。次の問題には進みません。");
-                return;
-            }
-
-            isMessagePanelOpen = true;
-            messagePanel.SetActive(true);
+            Debug.Log($"成功！確率 {currentQuestion.failureChance}% に対し {randomValue} で回避");
         }
+
+        int stressChange = aiFailed ? aiFailureStress : -aiSuccessRecovery;
+        SetAIResultMessage(aiFailed, stressChange);
+
+        if (ChangeStress(stressChange)) return;
+
+        OpenMessagePanel();
     }
     /// <summary>
     /// 現在の先生に問題を解いてもらう
@@ -142,6 +178,69 @@ public class QuestionManager : MonoBehaviour
         NextTurn();
     }
 
+    /// <summary>
+    /// ストレスを増減し、最大値に達したらリザルトへ移動する。
+    /// </summary>
+    private bool ChangeStress(int amount)
+    {
+        currentStress = Mathf.Clamp(currentStress + amount, 0, maxStress);
+        UpdateStressGauge();
+
+        Debug.Log($"ストレス: {currentStress}/{maxStress}");
+
+        if (currentStress < maxStress) return false;
+
+        isGameOver = true;
+        SceneManager.LoadScene(resultSceneName);
+        return true;
+    }
+
+    private void UpdateStressGauge()
+    {
+        if (stressGauge == null)
+        {
+            Debug.LogError("StressGaugeが見つかりません。", this);
+        }
+        else
+        {
+            stressGauge.SetStress(currentStress, maxStress);
+        }
+
+        if (stressPercentageText != null)
+        {
+            int stressPercentage = Mathf.RoundToInt((float)currentStress / maxStress * 100f);
+            stressPercentageText.text = $"{stressPercentage}%";
+        }
+    }
+
+    private void OpenMessagePanel()
+    {
+        if (messagePanel == null)
+        {
+            Debug.LogError("MessagePanelが設定されていません。次の問題には進みません。", this);
+            return;
+        }
+
+        isMessagePanelOpen = true;
+        messagePanel.SetActive(true);
+    }
+
+    private void SetAIResultMessage(bool aiFailed, int stressChange)
+    {
+        if (messageText == null)
+        {
+            Debug.LogError("MessageTextが設定されていません。", this);
+            return;
+        }
+
+        string resultMessage = aiFailed ? aiFailureMessage : aiSuccessMessage;
+        messageText.text = $"{resultMessage}\nストレス {stressChange:+#;-#;0}%";
+
+        if (messagePanelImage != null)
+        {
+            messagePanelImage.color = aiFailed ? aiFailurePanelColor : aiSuccessPanelColor;
+        }
+    }
+
 
 }
-
