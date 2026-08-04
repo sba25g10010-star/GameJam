@@ -184,12 +184,11 @@ public class QuestionManager : MonoBehaviour
             : Mathf.Max(0, selectedTeacher.efficiencyUp);
         SetTeacherResultMessage(
             teacherFailed,
-            resultMessage,
             stressIncrease,
             workEfficiencyChange);
         ChangeWorkEfficiency(workEfficiencyChange);
         bool reachedMaxStress = ChangeStress(stressIncrease);
-        SetTeacherResultMessage(teacherFailed, stressIncrease);
+        // SetTeacherResultMessage(teacherFailed, stressIncrease);
 
         // 判定後、次のターンで使う先生へ切り替える。
         teacherManager.ChengeRandomTeacher();
@@ -336,7 +335,6 @@ public class QuestionManager : MonoBehaviour
 
     private void SetTeacherResultMessage(
         bool teacherFailed,
-        string resultMessage,
         int stressIncrease,
         int workEfficiencyChange)
     {
