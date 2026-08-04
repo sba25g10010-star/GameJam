@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class TeacherManager : MonoBehaviour
@@ -9,35 +8,58 @@ public class TeacherManager : MonoBehaviour
     [SerializeField] private TeacherSO[] teachers;
     [SerializeField] private TeacherSO currentTeacher;
     [SerializeField] private TeacherUI teacherUI;
+    private TeacherSO[] currentSlotTeachers = new TeacherSO[3];
     private void Start()
     {
         ChengeRandomTeacher();
-        teacherUI.UpdateTeacherUI(currentTeacher);
+        ShowRandomTeachers();
     }
     /// <summary>
     /// 下の3か所にランダムな先生を表示する
     /// </summary>
     public void ShowRandomTeachers()
     {
-        if (teachers == null || teachers.Length < 3)
+        List<TeacherSO> teacherList = new List<TeacherSO>();
+
+        foreach (TeacherSO teacher in teachers)
         {
-            Debug.LogWarning("先生を3人以上登録してください");
+            if (teacher == null) continue;
+
+            // 上に表示中の先生は候補から外す
+            if (teacher == currentTeacher) continue;
+
+            // 同じTeacherSOを重複登録しない
+            if (teacherList.Contains(teacher)) continue;
+
+            teacherList.Add(teacher);
+        }
+
+        if (teacherList.Count < 3)
+        {
+            Debug.LogWarning(
+                "上の先生以外に、別々の先生を3人以上登録してください"
+            );
             return;
         }
-        List<TeacherSO> teacherList = new List<TeacherSO>(teachers);
+
         TeacherSO[] selectedTeachers = new TeacherSO[3];
 
         for (int i = 0; i < selectedTeachers.Length; i++)
         {
             int randomIndex = Random.Range(0, teacherList.Count);
+
             selectedTeachers[i] = teacherList[randomIndex];
+
+            // 選ばれた先生は候補から削除
             teacherList.RemoveAt(randomIndex);
         }
+
+        currentSlotTeachers = selectedTeachers;
         teacherUI.UpdateTeacherSlots(selectedTeachers);
     }
     public void ChengeRandomTeacher()
     {
-        if (teachers.Length == 0)
+        if (teachers == null || teachers.Length == 0)
         {
             Debug.LogWarning("先生が登録されてません");
             return;
@@ -69,6 +91,18 @@ public class TeacherManager : MonoBehaviour
 
         Debug.Log($"{currentTeacher.teacherName}に変更しました");
         teacherUI.UpdateTeacherUI(currentTeacher);
+    }
+    private bool IsSameTeachers(TeacherSO[] newTeachers)
+    {
+        for (int i = 0; i < currentSlotTeachers.Length; i++)
+        {
+            if (currentSlotTeachers[i] != newTeachers[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     /// <summary>
     /// 現在の先生が問題の得意な先生か判定する

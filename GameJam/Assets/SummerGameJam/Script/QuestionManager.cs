@@ -127,11 +127,11 @@ public class QuestionManager : MonoBehaviour
     /// </summary>
     public void OnTeacherButton()
     {
-        if (isGameOver) return;
-        // 下の3人をランダムで入れ替える
-        teacherManager.ShowRandomTeachers();
+        if (isGameOver || isMessagePanelOpen || currentQuestion == null) return;
         // 先生をランダムで変更
         teacherManager.ChengeRandomTeacher();
+        // 下の3人をランダムで入れ替える
+        teacherManager.ShowRandomTeachers();
 
 
         if (teacherManager.IsCorrectTeacher(currentQuestion))
