@@ -37,7 +37,7 @@ public class TeacherManager : MonoBehaviour
     }
     public void ChengeRandomTeacher()
     {
-        if (teachers == null || teachers.Length == 0)
+        if (teachers.Length == 0)
         {
             Debug.LogWarning("先生が登録されてません");
             return;
