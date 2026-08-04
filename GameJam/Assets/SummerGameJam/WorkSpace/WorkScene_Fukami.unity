@@ -148,7 +148,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 744d68fb524ab5d449731ed049aef88c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeacherManager
-  currentTeacher: {fileID: 11400000, guid: bc60d1c17b95ef744a82f7edb8d20a94, type: 2}
+  currentTeacher: {fileID: 11400000, guid: d2e10676e58efbe4bbba59812230ce97, type: 2}
+  teacherUI: {fileID: 0}
 --- !u!4 &1419308079
 Transform:
   m_ObjectHideFlags: 0
@@ -164,6 +165,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1452324184 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1852865600062245468, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+  m_PrefabInstance: {fileID: 1546762832}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27cf2cad2c6807347bfaa91e8c03069d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuestionManager
 --- !u!1001 &1546762832
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -216,9 +228,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2135040276520484328, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184355357890619513, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184355357890619513, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184355357890619513, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1452324184}
+    - target: {fileID: 2184355357890619513, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2184355357890619513, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnTeacherButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184355357890619513, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: QuestionManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184355357890619513, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6196476470600796701, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
       propertyPath: m_Name
