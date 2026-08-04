@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c17064f750f7ee64ea5329671c7fcee2, type: 3}
   m_Name: Question3
   m_EditorClassIdentifier: Assembly-CSharp::QuestionSO
-  questionName: Error3
-  failureChance: 70
+  questionName: Error2
+  failureChance: 40
   correctTeacher: {fileID: 11400000, guid: d2e10676e58efbe4bbba59812230ce97, type: 2}
