@@ -14,6 +14,9 @@ public class QuestionManager : MonoBehaviour
     private bool isGameOver = false;
     [Header("先生管理クラスの参照")]
     [SerializeField] private TeacherManager teacherManager;
+    [Header("問題数")]
+    [SerializeField] private TextMeshProUGUI questionNumberText;
+    private int currentQuestionNumber = 0;
 
     [Header("コメント管理クラスの参照")]
     [SerializeField] private CommentMaager commentMaager;
@@ -97,6 +100,12 @@ public class QuestionManager : MonoBehaviour
         {
             messagePanel.SetActive(false);
         }
+        currentQuestionNumber = 0;
+
+        if (questionNumberText != null)
+        {
+            questionNumberText.text = "";
+        }
         NextTurn();
     }
     /// <summary>
@@ -106,6 +115,11 @@ public class QuestionManager : MonoBehaviour
     {
         if (isGameOver || isMessagePanelOpen) return;
         if (questionDatabase.Count == 0) return;
+        currentQuestionNumber++;
+        if (questionNumberText != null)
+        {
+            questionNumberText.text = $"第{currentQuestionNumber}問";
+        }
         int randomIndex = Random.Range(0, questionDatabase.Count);
         currentQuestion = questionDatabase[randomIndex];
         gameUI.UpdateUI(currentQuestion);
@@ -249,6 +263,7 @@ public class QuestionManager : MonoBehaviour
         UpdateStressGauge();
         Debug.Log($"ストレス: {currentStress}/{maxStress}");
         if (currentStress < maxStress) return false;
+        ResultData.QuestionCount = currentQuestionNumber;
         isGameOver = true;
         SceneManager.LoadScene(resultSceneName);
         return true;
