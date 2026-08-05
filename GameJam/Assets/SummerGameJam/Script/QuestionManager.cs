@@ -274,7 +274,6 @@ public class QuestionManager : MonoBehaviour
     /// </summary>
     private bool ChangeStress(int amount)
     {
-        int previousStress = currentStress;
         currentStress = Mathf.Clamp(currentStress + amount, 0, maxStress);
         UpdateStressGauge();
         Debug.Log($"ストレス: {currentStress}/{maxStress}");
