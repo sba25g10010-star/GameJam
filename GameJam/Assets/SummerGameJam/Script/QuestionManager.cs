@@ -31,6 +31,7 @@ public class QuestionManager : MonoBehaviour
     [SerializeField] private GameObject messagePanel;
     [SerializeField] private Image messagePanelImage;
     [SerializeField] private TextMeshProUGUI messageText;
+    [SerializeField] private MessagePanelContent messagePanelContent;
     [SerializeField] private TextMeshProUGUI stressPercentageText;
     [SerializeField] private TextMeshProUGUI workPercentageText;
 
@@ -72,6 +73,10 @@ public class QuestionManager : MonoBehaviour
         if (messageText == null && messagePanel != null)
         {
             messageText = messagePanel.GetComponentInChildren<TextMeshProUGUI>(true);
+        }
+        if (messagePanelContent == null && messagePanel != null)
+        {
+            messagePanelContent = messagePanel.GetComponentInChildren<MessagePanelContent>(true);
         }
         if (stressGauge == null)
         {
@@ -303,6 +308,26 @@ public class QuestionManager : MonoBehaviour
 
     private void SetAIResultMessage(bool aiFailed, int stressChange, int workEfficiencyChange)
     {
+        if (messagePanelContent != null)
+        {
+            string panelResult = aiFailed ? FailureMessage : SuccessMessage;
+            string panelComment = commentMaager != null
+                ? commentMaager.GetAIComment(currentQuestion, aiFailed)
+                : string.Empty;
+
+            UpdateMessagePanelContent(
+                panelResult,
+                panelComment,
+                stressChange,
+                workEfficiencyChange);
+
+            if (messagePanelImage != null)
+            {
+                messagePanelImage.color = aiFailed ? aiFailurePanelColor : aiSuccessPanelColor;
+            }
+
+            return;
+        }
         if (messageText == null)
         {
             Debug.LogError("MessageTextが設定されていません。", this);
@@ -340,6 +365,26 @@ public class QuestionManager : MonoBehaviour
         int stressIncrease,
         int workEfficiencyChange)
     {
+        if (messagePanelContent != null)
+        {
+            string panelResult = teacherFailed ? FailureMessage : SuccessMessage;
+            string panelComment = commentMaager != null
+                ? commentMaager.GetTeacherComment(currentQuestion, teacherFailed)
+                : string.Empty;
+
+            UpdateMessagePanelContent(
+                panelResult,
+                panelComment,
+                stressIncrease,
+                workEfficiencyChange);
+
+            if (messagePanelImage != null)
+            {
+                messagePanelImage.color = teacherFailed ? aiFailurePanelColor : aiSuccessPanelColor;
+            }
+
+            return;
+        }
         if (messageText == null)
         {
             Debug.Log("messageTextがnullです");
@@ -372,4 +417,22 @@ public class QuestionManager : MonoBehaviour
         }
     }
 
+    private void UpdateMessagePanelContent(
+        string resultMessage,
+        string comment,
+        int stressChange,
+        int workEfficiencyChange)
+    {
+        if (messagePanelContent == null)
+        {
+            Debug.LogError("MessagePanelContentが設定されていません。", this);
+            return;
+        }
+
+        messagePanelContent.SetContent(
+            resultMessage,
+            comment,
+            stressChange,
+            workEfficiencyChange);
+    }
 }
