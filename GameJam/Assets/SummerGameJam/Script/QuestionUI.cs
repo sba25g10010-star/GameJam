@@ -14,7 +14,7 @@ public class QuestionUI : MonoBehaviour
     {
         nameText.text = data.questionName;
         
-        chanceText.text = $"死亡確率: {data.failureChance}%";
+        chanceText.text = $"失敗確率: {data.failureChance}%";
     }
 
     /// <summary>
