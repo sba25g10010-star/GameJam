@@ -193,8 +193,13 @@ public class QuestionManager : MonoBehaviour
         }
         int stressChange = aiFailed ? aiFailureStress : -aiSuccessRecovery;
         int workEfficiencyChange = aiFailed ? -aiFailureEfficiency : aiSuccessEfficiency;
+
+        int prevStress = currentStress;
+        int prevEfficiency = currentWorkEfficiency;
+
+
         ChangeWorkEfficiency(workEfficiencyChange);
-        ChangeStress(stressChange);
+        bool reachedMax = ChangeStress(stressChange);
 
         DeathCause deathCause = GetDeathCause();
         if (deathCause != DeathCause.None)
@@ -203,10 +208,14 @@ public class QuestionManager : MonoBehaviour
             return;
         }
 
-        SetAIResultMessage(aiFailed, stressChange, workEfficiencyChange);
+
+        OpenMessagePanel();
+        SetAIResultMessage(aiFailed, stressChange, workEfficiencyChange, prevStress, prevEfficiency);
+
+        if (reachedMax) return;
+        
         teacherManager.ChengeRandomTeacher();
         teacherManager.ShowRandomTeachers();
-        OpenMessagePanel();
     }
     /// <summary>
     /// 現在の先生に問題を解いてもらう
@@ -247,23 +256,16 @@ public class QuestionManager : MonoBehaviour
         int stressIncrease = Mathf.Max(0,
             teacherFailed ? selectedTeacher.missStlessUp : selectedTeacher.correctStlessUp);
 
-        // string resultMessage = teacherFailed
-        //     ? currentQuestion.missTeacherComment
-        //     : currentQuestion.correctTeacherComment;
-
-        // if (string.IsNullOrWhiteSpace(resultMessage))
-        // {
-        //     resultMessage = teacherFailed
-        //         ? $"{selectedTeacher.teacherName}先生が失敗した！"
-        //         : $"{selectedTeacher.teacherName}先生が成功した！";
-        // }
-
         int workEfficiencyChange = teacherFailed
             ? -Mathf.Max(0, selectedTeacher.efficiencyDown)
             : Mathf.Max(0, selectedTeacher.efficiencyUp);
+
+        int prevStress = currentStress;
+        int prevEfficiency = currentWorkEfficiency;
+
         ChangeWorkEfficiency(workEfficiencyChange);
-        ChangeStress(stressIncrease);
-        // SetTeacherResultMessage(teacherFailed, stressIncrease);
+
+        bool reachedMaxStress = ChangeStress(stressIncrease);
 
         DeathCause deathCause = GetDeathCause();
         if (deathCause != DeathCause.None)
@@ -272,16 +274,23 @@ public class QuestionManager : MonoBehaviour
             return;
         }
 
+
+
+        OpenMessagePanel();
         SetTeacherResultMessage(
-            teacherFailed,
-            stressIncrease,
-            workEfficiencyChange);
+                    teacherFailed,
+                    stressIncrease,
+                    workEfficiencyChange,
+                    prevStress,
+                    prevEfficiency);
 
         // 判定後、次のターンで使う先生へ切り替える。
         teacherManager.ChengeRandomTeacher();
         teacherManager.ShowRandomTeachers();
 
         OpenMessagePanel();
+        if (reachedMaxStress) return;
+
     }
     /// <summary>
     /// 下3人から先生をランダムで1人選ぶ
@@ -328,7 +337,7 @@ public class QuestionManager : MonoBehaviour
     /// <summary>
     /// ストレスを増減する。
     /// </summary>
-    private void ChangeStress(int amount)
+    private bool ChangeStress(int amount)
     {
         currentStress = Mathf.Clamp(currentStress + amount, 0, maxStress);
         UpdateStressGauge();
@@ -344,6 +353,7 @@ public class QuestionManager : MonoBehaviour
         {
             stressGauge.SetStress(currentStress, maxStress);
         }
+
         if (stressPercentageText != null)
         {
             int stressPercentage = Mathf.RoundToInt((float)currentStress / maxStress * 100f);
@@ -551,7 +561,8 @@ public class QuestionManager : MonoBehaviour
         messagePanel.SetActive(true);
     }
 
-    private void SetAIResultMessage(bool aiFailed, int stressChange, int workEfficiencyChange)
+    private void SetAIResultMessage(bool aiFailed, int stressChange, int workEfficiencyChange, int prevStress,
+        int prevEfficiency)
     {
         if (messagePanelContent != null)
         {
@@ -561,10 +572,14 @@ public class QuestionManager : MonoBehaviour
                 : string.Empty;
 
             UpdateMessagePanelContent(
-                panelResult,
-                panelComment,
-                stressChange,
-                workEfficiencyChange);
+                            panelResult,
+                            panelComment,
+                            stressChange,
+                            workEfficiencyChange,
+                            prevStress,
+                            currentStress,
+                            prevEfficiency,
+                            currentWorkEfficiency);
 
             if (messagePanelImage != null)
             {
@@ -606,9 +621,11 @@ public class QuestionManager : MonoBehaviour
     }
 
     private void SetTeacherResultMessage(
-        bool teacherFailed,
-        int stressIncrease,
-        int workEfficiencyChange)
+            bool teacherFailed,
+            int stressIncrease,
+            int workEfficiencyChange,
+            int prevStress,
+            int prevEfficiency)
     {
         if (messagePanelContent != null)
         {
@@ -621,7 +638,11 @@ public class QuestionManager : MonoBehaviour
                 panelResult,
                 panelComment,
                 stressIncrease,
-                workEfficiencyChange);
+                workEfficiencyChange,
+                prevStress,
+                currentStress,
+                prevEfficiency,
+                currentWorkEfficiency);
 
             if (messagePanelImage != null)
             {
@@ -663,10 +684,14 @@ public class QuestionManager : MonoBehaviour
     }
 
     private void UpdateMessagePanelContent(
-        string resultMessage,
+string resultMessage,
         string comment,
         int stressChange,
-        int workEfficiencyChange)
+        int workEfficiencyChange,
+        int previousStress,
+        int currentStress,
+        int previousEfficiency,
+        int currentEfficiency)
     {
         if (messagePanelContent == null)
         {
@@ -675,9 +700,14 @@ public class QuestionManager : MonoBehaviour
         }
 
         messagePanelContent.SetContent(
-            resultMessage,
-            comment,
-            stressChange,
-            workEfficiencyChange);
+                    resultMessage,
+                    comment,
+                    stressChange,
+                    workEfficiencyChange,
+                    previousStress,
+                    currentStress,
+                    maxStress,
+                    previousEfficiency,
+                    currentEfficiency);
     }
 }
