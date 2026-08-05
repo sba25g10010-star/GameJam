@@ -739,7 +739,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -39, y: 110}
+  m_AnchoredPosition: {x: -14, y: 110}
   m_SizeDelta: {x: 250, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8751593582572960635
@@ -1474,7 +1474,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &265464212017001685
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3208,7 +3208,7 @@ MonoBehaviour:
   messagePanel: {fileID: 2135040276520484328}
   messagePanelImage: {fileID: 4903707267149958927}
   messageText: {fileID: 0}
-  messagePanelContent: {fileID: 0}
+  messagePanelContent: {fileID: 350015724426016526}
   stressPercentageText: {fileID: 1115168140}
   workPercentageText: {fileID: 1810000004}
   stressGauge: {fileID: 6673303907901913978}
@@ -3767,7 +3767,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -4065,6 +4065,17 @@ PrefabInstance:
       addedObject: {fileID: 2297513604253234555}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc3fc3a8b987b424b82899b821806fad, type: 3}
+--- !u!114 &350015724426016526 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 510000003, guid: bc3fc3a8b987b424b82899b821806fad, type: 3}
+  m_PrefabInstance: {fileID: 350015724662770829}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 149ec45db3223ec42bc7945254af716c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MessagePanelContent
 --- !u!224 &350015724426016527 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 510000002, guid: bc3fc3a8b987b424b82899b821806fad, type: 3}
