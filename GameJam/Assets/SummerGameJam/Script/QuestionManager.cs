@@ -152,13 +152,20 @@ public class QuestionManager : MonoBehaviour
         }
         int stressChange = aiFailed ? aiFailureStress : -aiSuccessRecovery;
         int workEfficiencyChange = aiFailed ? -aiFailureEfficiency : aiSuccessEfficiency;
-        SetAIResultMessage(aiFailed, stressChange, workEfficiencyChange);
-        ChangeWorkEfficiency(workEfficiencyChange);
 
-        if (ChangeStress(stressChange)) return;
+        int prevStress = currentStress;
+        int prevEfficiency = currentWorkEfficiency;
+
+
+        ChangeWorkEfficiency(workEfficiencyChange);
+        bool reachedMax = ChangeStress(stressChange);
+
+        OpenMessagePanel();
+        SetAIResultMessage(aiFailed, stressChange, workEfficiencyChange, prevStress, prevEfficiency);
+
+        if (reachedMax) return;
         teacherManager.ChengeRandomTeacher();
         teacherManager.ShowRandomTeachers();
-        OpenMessagePanel();
     }
     /// <summary>
     /// 現在の先生に問題を解いてもらう
@@ -199,26 +206,25 @@ public class QuestionManager : MonoBehaviour
         int stressIncrease = Mathf.Max(0,
             teacherFailed ? selectedTeacher.missStlessUp : selectedTeacher.correctStlessUp);
 
-        // string resultMessage = teacherFailed
-        //     ? currentQuestion.missTeacherComment
-        //     : currentQuestion.correctTeacherComment;
-
-        // if (string.IsNullOrWhiteSpace(resultMessage))
-        // {
-        //     resultMessage = teacherFailed
-        //         ? $"{selectedTeacher.teacherName}先生が失敗した！"
-        //         : $"{selectedTeacher.teacherName}先生が成功した！";
-        // }
-
         int workEfficiencyChange = teacherFailed
             ? -Mathf.Max(0, selectedTeacher.efficiencyDown)
             : Mathf.Max(0, selectedTeacher.efficiencyUp);
-        SetTeacherResultMessage(
-            teacherFailed,
-            stressIncrease,
-            workEfficiencyChange);
+
+        int prevStress = currentStress;
+        int prevEfficiency = currentWorkEfficiency;
+
         ChangeWorkEfficiency(workEfficiencyChange);
+
         bool reachedMaxStress = ChangeStress(stressIncrease);
+
+        OpenMessagePanel();
+        SetTeacherResultMessage(
+                    teacherFailed,
+                    stressIncrease,
+                    workEfficiencyChange,
+                    prevStress,
+                    prevEfficiency);
+
         // SetTeacherResultMessage(teacherFailed, stressIncrease);
 
         // 判定後、次のターンで使う先生へ切り替える。
@@ -227,7 +233,6 @@ public class QuestionManager : MonoBehaviour
 
         if (reachedMaxStress) return;
 
-        OpenMessagePanel();
     }
     /// <summary>
     /// 下3人から先生をランダムで1人選ぶ
@@ -269,6 +274,7 @@ public class QuestionManager : MonoBehaviour
     /// </summary>
     private bool ChangeStress(int amount)
     {
+        int previousStress = currentStress;
         currentStress = Mathf.Clamp(currentStress + amount, 0, maxStress);
         UpdateStressGauge();
         Debug.Log($"ストレス: {currentStress}/{maxStress}");
@@ -288,6 +294,7 @@ public class QuestionManager : MonoBehaviour
         {
             stressGauge.SetStress(currentStress, maxStress);
         }
+
         if (stressPercentageText != null)
         {
             int stressPercentage = Mathf.RoundToInt((float)currentStress / maxStress * 100f);
@@ -331,7 +338,8 @@ public class QuestionManager : MonoBehaviour
         messagePanel.SetActive(true);
     }
 
-    private void SetAIResultMessage(bool aiFailed, int stressChange, int workEfficiencyChange)
+    private void SetAIResultMessage(bool aiFailed, int stressChange, int workEfficiencyChange, int prevStress,
+        int prevEfficiency)
     {
         if (messagePanelContent != null)
         {
@@ -341,10 +349,14 @@ public class QuestionManager : MonoBehaviour
                 : string.Empty;
 
             UpdateMessagePanelContent(
-                panelResult,
-                panelComment,
-                stressChange,
-                workEfficiencyChange);
+                            panelResult,
+                            panelComment,
+                            stressChange,
+                            workEfficiencyChange,
+                            prevStress,
+                            currentStress,
+                            prevEfficiency,
+                            currentWorkEfficiency);
 
             if (messagePanelImage != null)
             {
@@ -386,9 +398,11 @@ public class QuestionManager : MonoBehaviour
     }
 
     private void SetTeacherResultMessage(
-        bool teacherFailed,
-        int stressIncrease,
-        int workEfficiencyChange)
+            bool teacherFailed,
+            int stressIncrease,
+            int workEfficiencyChange,
+            int prevStress,
+            int prevEfficiency)
     {
         if (messagePanelContent != null)
         {
@@ -401,7 +415,11 @@ public class QuestionManager : MonoBehaviour
                 panelResult,
                 panelComment,
                 stressIncrease,
-                workEfficiencyChange);
+                workEfficiencyChange,
+                prevStress,
+                currentStress,
+                prevEfficiency,
+                currentWorkEfficiency);
 
             if (messagePanelImage != null)
             {
@@ -443,10 +461,14 @@ public class QuestionManager : MonoBehaviour
     }
 
     private void UpdateMessagePanelContent(
-        string resultMessage,
+string resultMessage,
         string comment,
         int stressChange,
-        int workEfficiencyChange)
+        int workEfficiencyChange,
+        int previousStress,
+        int currentStress,
+        int previousEfficiency,
+        int currentEfficiency)
     {
         if (messagePanelContent == null)
         {
@@ -455,9 +477,14 @@ public class QuestionManager : MonoBehaviour
         }
 
         messagePanelContent.SetContent(
-            resultMessage,
-            comment,
-            stressChange,
-            workEfficiencyChange);
+                    resultMessage,
+                    comment,
+                    stressChange,
+                    workEfficiencyChange,
+                    previousStress,
+                    currentStress,
+                    maxStress,
+                    previousEfficiency,
+                    currentEfficiency);
     }
 }
