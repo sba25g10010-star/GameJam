@@ -14,6 +14,10 @@ public class QuestionManager : MonoBehaviour
     private bool isGameOver = false;
     [Header("先生管理クラスの参照")]
     [SerializeField] private TeacherManager teacherManager;
+    [Header("問題数")]
+    [SerializeField] private TextMeshProUGUI questionNumberText;
+    private int currentQuestionNumber = 0; // 表示用（第○問）
+    private int solvedQuestionCount = 0;     // 成功した問題数
 
     [Header("コメント管理クラスの参照")]
     [SerializeField] private CommentMaager commentMaager;
@@ -97,6 +101,12 @@ public class QuestionManager : MonoBehaviour
         {
             messagePanel.SetActive(false);
         }
+        currentQuestionNumber = 0;
+
+        if (questionNumberText != null)
+        {
+            questionNumberText.text = "";
+        }
         NextTurn();
     }
     /// <summary>
@@ -106,6 +116,11 @@ public class QuestionManager : MonoBehaviour
     {
         if (isGameOver || isMessagePanelOpen) return;
         if (questionDatabase.Count == 0) return;
+        currentQuestionNumber++;
+        if (questionNumberText != null)
+        {
+            questionNumberText.text = $"第{currentQuestionNumber}問";
+        }
         int randomIndex = Random.Range(0, questionDatabase.Count);
         currentQuestion = questionDatabase[randomIndex];
         gameUI.UpdateUI(currentQuestion);
@@ -129,6 +144,11 @@ public class QuestionManager : MonoBehaviour
         else
         {
             Debug.Log($"成功！確率 {currentQuestion.failureChance}% に対し {randomValue} で回避");
+
+        }
+        if (!aiFailed)
+        {
+            solvedQuestionCount++;
         }
         int stressChange = aiFailed ? aiFailureStress : -aiSuccessRecovery;
         int workEfficiencyChange = aiFailed ? -aiFailureEfficiency : aiSuccessEfficiency;
@@ -170,6 +190,10 @@ public class QuestionManager : MonoBehaviour
         else
         {
             Debug.Log($"{selectedTeacher.teacherName}先生は正解できる先生なので必ず成功！");
+        }
+        if (!teacherFailed)
+        {
+            solvedQuestionCount++;
         }
 
         int stressIncrease = Mathf.Max(0,
@@ -249,6 +273,7 @@ public class QuestionManager : MonoBehaviour
         UpdateStressGauge();
         Debug.Log($"ストレス: {currentStress}/{maxStress}");
         if (currentStress < maxStress) return false;
+        ResultData.SolvedQuestionCount = solvedQuestionCount;
         isGameOver = true;
         SceneManager.LoadScene(resultSceneName);
         return true;
