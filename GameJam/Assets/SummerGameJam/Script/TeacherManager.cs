@@ -153,7 +153,8 @@ public class TeacherManager : MonoBehaviour
             return false;
         }
 
-        return currentTeacher == question.correctTeacher;
-    }
+        if(question.correctTeachers == null || question.correctTeachers.Count == 0)return false;
 
+        return question.correctTeachers.Contains(currentTeacher);
+    }
 }
