@@ -3118,7 +3118,7 @@ GameObject:
   - component: {fileID: 8337836999477507585}
   - component: {fileID: 8244388883513415272}
   m_Layer: 5
-  m_Name: "\u5F97\u610F\u306A\u3053\u3068"
+  m_Name: Hobby
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
