@@ -9,7 +9,7 @@ public class ResultManager : MonoBehaviour
     void Start()
     {
         questionNumberText.text = $"{ResultData.CurrentQuestionNumber}問やって";
-        solvedQuestionCount.text = $"{ResultData.SolvedQuestionCount}問正解できた：";
+        solvedQuestionCount.text = $"{ResultData.SolvedQuestionCount}問正解できた";
 
     }
 }
