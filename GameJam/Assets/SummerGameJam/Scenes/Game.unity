@@ -119,6 +119,16 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &253747429 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4673008704394470338, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+  m_PrefabInstance: {fileID: 2236983324543323153}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1394463638 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3336677739483568731, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+  m_PrefabInstance: {fileID: 2236983324543323153}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2236983324543323153
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -187,6 +197,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2248870989437286830, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+      propertyPath: closeButton
+      value: 
+      objectReference: {fileID: 253747429}
+    - target: {fileID: 2248870989437286830, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
+      propertyPath: tutorialImage
+      value: 
+      objectReference: {fileID: 1394463638}
     - target: {fileID: 6196476470600796701, guid: 1ebe5ceef6c37f940af0af0bc1da5f41, type: 3}
       propertyPath: m_Name
       value: InGame

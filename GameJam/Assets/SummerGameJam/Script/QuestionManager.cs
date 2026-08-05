@@ -536,7 +536,7 @@ public class QuestionManager : MonoBehaviour
     private bool TriggerGameOver()
     {
         if (isGameOver) return false;
-
+        ResultData.CurrentQuestionNumber =currentQuestionNumber;
         ResultData.SolvedQuestionCount = solvedQuestionCount;
         isGameOver = true;
         SceneManager.LoadScene(resultSceneName);
