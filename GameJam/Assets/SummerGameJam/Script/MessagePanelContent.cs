@@ -59,4 +59,16 @@ public class MessagePanelContent : MonoBehaviour
             target.text = value ?? string.Empty;
         }
     }
+
+        public void DeathSetContent(
+        string result,
+        string comment,
+        int stressChange,
+        int workEfficiencyChange)
+    {
+        SetText(resultText, result);
+        SetText(commentText, comment);
+        SetText(stressChangeText, $"ストレス {FormatChange(stressChange)}%");
+        SetText(workEfficiencyChangeText, $"作業効率 {FormatChange(workEfficiencyChange)}%");
+    }
 }

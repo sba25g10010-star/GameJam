@@ -57,21 +57,24 @@ public class QuestionManager : MonoBehaviour
     [SerializeField] private Color deathPanelColor = new Color32(90, 20, 20, 242);
 
     [Header("ストレスによる死亡メッセージ候補")]
-    [SerializeField, TextArea] private string[] stressDeathMessages =
+    [SerializeField, TextArea]
+    private string[] stressDeathMessages =
     {
         "ストレスを溜めすぎて頭が爆発した",
         "耐えきれなくなった"
     };
 
     [Header("作業効率による死亡メッセージ候補")]
-    [SerializeField, TextArea] private string[] workEfficiencyDeathMessages =
+    [SerializeField, TextArea]
+    private string[] workEfficiencyDeathMessages =
     {
         "全然作業が進まなかった",
         "作業が進まなかったので、逃げることにした"
     };
 
     [Header("両方による死亡メッセージ候補")]
-    [SerializeField, TextArea] private string[] bothDeathMessages =
+    [SerializeField, TextArea]
+    private string[] bothDeathMessages =
     {
         "何もかもが嫌になった",
         "もう全てを諦めることにした"
@@ -213,7 +216,7 @@ public class QuestionManager : MonoBehaviour
         SetAIResultMessage(aiFailed, stressChange, workEfficiencyChange, prevStress, prevEfficiency);
 
         if (reachedMax) return;
-        
+
         teacherManager.ChengeRandomTeacher();
         teacherManager.ShowRandomTeachers();
     }
@@ -342,6 +345,11 @@ public class QuestionManager : MonoBehaviour
         currentStress = Mathf.Clamp(currentStress + amount, 0, maxStress);
         UpdateStressGauge();
         Debug.Log($"ストレス: {currentStress}/{maxStress}");
+        if (currentStress < maxStress) return false;
+        ResultData.SolvedQuestionCount = solvedQuestionCount;
+        isGameOver = true;
+        SceneManager.LoadScene(resultSceneName);
+        return true;
     }
     private void UpdateStressGauge()
     {
@@ -438,7 +446,7 @@ public class QuestionManager : MonoBehaviour
         }
 
         string deathMessage = GetRandomDeathMessage(cause);
-        deathMessagePanelContent.SetContent(
+        deathMessagePanelContent.DeathSetContent(
             deathResultMessage,
             deathMessage,
             stressChange,
