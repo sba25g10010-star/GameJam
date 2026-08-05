@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: YangTeacher
   m_EditorClassIdentifier: Assembly-CSharp::TeacherSO
   teacherName: "\u6CB3\u5408"
-  hobby: "\u6D41\u884C"
+  hobby: "\u6D41\u884C,\u8ECA"
   teacherImage: {fileID: 21300000, guid: 7ab409f751d1d6b44a0b644215d21311, type: 3}
   correctStlessUp: 0
   missStlessUp: 10
