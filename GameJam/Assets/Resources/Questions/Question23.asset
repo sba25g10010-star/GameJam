@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::QuestionSO
   questionName: "\u300C\u4E86\u89E3\u3057\u307E\u3057\u305F\u300D\u3092\u76EE\u4E0A\u306E\u4EBA\u306B\u9001\u3063\u3066\u5927\u4E08\u592B\uFF1F "
   failureChance: 10
-  correctTeacher: {fileID: 0}
+  correctTeachers:
+  - {fileID: 11400000, guid: d2e10676e58efbe4bbba59812230ce97, type: 2}
   correctAIComment: "\u5931\u793C\u306B\u306A\u308A\u306B\u304F\u3044\u8868\u73FE\u3092\u6559\u3048\u3066\u304F\u308C\u305F\u3002 "
   missAIComment: "\u72B6\u6CC1\u306B\u5408\u308F\u306A\u3044\u307B\u3069\u5805\u3044\u6587\u7AE0\u306B\u306A\u3063\u305F\u3002 "
   correctTeacherComment: "\u5148\u751F\u306B\u306F\u300E\u627F\u77E5\u3057\u307E\u3057\u305F\u300F\u304C\u7121\u96E3\u3060\u3088\u3002 "
