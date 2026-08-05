@@ -7,11 +7,20 @@ using UnityEngine.UI;
 
 public class QuestionManager : MonoBehaviour
 {
+    [System.Flags]
+    private enum DeathCause
+    {
+        None = 0,
+        Stress = 1,
+        WorkEfficiency = 2
+    }
+
     private List<QuestionSO> questionDatabase = new List<QuestionSO>();
     private QuestionSO currentQuestion;
 
     private bool teacherFailed = false;
     private bool isGameOver = false;
+    private bool isDeathMessagePanelOpen = false;
     [Header("先生管理クラスの参照")]
     [SerializeField] private TeacherManager teacherManager;
     [Header("問題数")]
@@ -38,6 +47,38 @@ public class QuestionManager : MonoBehaviour
     [SerializeField] private MessagePanelContent messagePanelContent;
     [SerializeField] private TextMeshProUGUI stressPercentageText;
     [SerializeField] private TextMeshProUGUI workPercentageText;
+
+    [Header("死亡パネル")]
+    [Tooltip("未設定の場合は、生存時のMessagePanelを実行時に複製します。")]
+    [SerializeField] private GameObject deathMessagePanel;
+    [SerializeField] private MessagePanelContent deathMessagePanelContent;
+    [SerializeField] private Image deathMessagePanelImage;
+    [SerializeField] private string deathResultMessage = "死亡";
+    [SerializeField] private Color deathPanelColor = new Color32(90, 20, 20, 242);
+
+    [Header("ストレスによる死亡メッセージ候補")]
+    [SerializeField, TextArea]
+    private string[] stressDeathMessages =
+    {
+        "ストレスを溜めすぎて頭が爆発した",
+        "耐えきれなくなった"
+    };
+
+    [Header("作業効率による死亡メッセージ候補")]
+    [SerializeField, TextArea]
+    private string[] workEfficiencyDeathMessages =
+    {
+        "全然作業が進まなかった",
+        "作業が進まなかったので、逃げることにした"
+    };
+
+    [Header("両方による死亡メッセージ候補")]
+    [SerializeField, TextArea]
+    private string[] bothDeathMessages =
+    {
+        "何もかもが嫌になった",
+        "もう全てを諦めることにした"
+    };
 
     [Header("ストレスゲージ")]
     [SerializeField] private StressGauge stressGauge;
@@ -82,6 +123,9 @@ public class QuestionManager : MonoBehaviour
         {
             messagePanelContent = messagePanel.GetComponentInChildren<MessagePanelContent>(true);
         }
+
+        InitializeDeathMessagePanel();
+
         if (stressGauge == null)
         {
             stressGauge = FindAnyObjectByType<StressGauge>();
@@ -152,13 +196,29 @@ public class QuestionManager : MonoBehaviour
         }
         int stressChange = aiFailed ? aiFailureStress : -aiSuccessRecovery;
         int workEfficiencyChange = aiFailed ? -aiFailureEfficiency : aiSuccessEfficiency;
-        SetAIResultMessage(aiFailed, stressChange, workEfficiencyChange);
-        ChangeWorkEfficiency(workEfficiencyChange);
 
-        if (ChangeStress(stressChange)) return;
+        int prevStress = currentStress;
+        int prevEfficiency = currentWorkEfficiency;
+
+
+        ChangeWorkEfficiency(workEfficiencyChange);
+        bool reachedMax = ChangeStress(stressChange);
+
+        DeathCause deathCause = GetDeathCause();
+        if (deathCause != DeathCause.None)
+        {
+            OpenDeathMessagePanel(deathCause, stressChange, workEfficiencyChange);
+            return;
+        }
+
+
+        OpenMessagePanel();
+        SetAIResultMessage(aiFailed, stressChange, workEfficiencyChange, prevStress, prevEfficiency);
+
+        if (reachedMax) return;
+
         teacherManager.ChengeRandomTeacher();
         teacherManager.ShowRandomTeachers();
-        OpenMessagePanel();
     }
     /// <summary>
     /// 現在の先生に問題を解いてもらう
@@ -199,35 +259,41 @@ public class QuestionManager : MonoBehaviour
         int stressIncrease = Mathf.Max(0,
             teacherFailed ? selectedTeacher.missStlessUp : selectedTeacher.correctStlessUp);
 
-        // string resultMessage = teacherFailed
-        //     ? currentQuestion.missTeacherComment
-        //     : currentQuestion.correctTeacherComment;
-
-        // if (string.IsNullOrWhiteSpace(resultMessage))
-        // {
-        //     resultMessage = teacherFailed
-        //         ? $"{selectedTeacher.teacherName}先生が失敗した！"
-        //         : $"{selectedTeacher.teacherName}先生が成功した！";
-        // }
-
         int workEfficiencyChange = teacherFailed
             ? -Mathf.Max(0, selectedTeacher.efficiencyDown)
             : Mathf.Max(0, selectedTeacher.efficiencyUp);
-        SetTeacherResultMessage(
-            teacherFailed,
-            stressIncrease,
-            workEfficiencyChange);
+
+        int prevStress = currentStress;
+        int prevEfficiency = currentWorkEfficiency;
+
         ChangeWorkEfficiency(workEfficiencyChange);
+
         bool reachedMaxStress = ChangeStress(stressIncrease);
-        // SetTeacherResultMessage(teacherFailed, stressIncrease);
+
+        DeathCause deathCause = GetDeathCause();
+        if (deathCause != DeathCause.None)
+        {
+            OpenDeathMessagePanel(deathCause, stressIncrease, workEfficiencyChange);
+            return;
+        }
+
+
+
+        OpenMessagePanel();
+        SetTeacherResultMessage(
+                    teacherFailed,
+                    stressIncrease,
+                    workEfficiencyChange,
+                    prevStress,
+                    prevEfficiency);
 
         // 判定後、次のターンで使う先生へ切り替える。
         teacherManager.ChengeRandomTeacher();
         teacherManager.ShowRandomTeachers();
 
+        OpenMessagePanel();
         if (reachedMaxStress) return;
 
-        OpenMessagePanel();
     }
     /// <summary>
     /// 下3人から先生をランダムで1人選ぶ
@@ -260,24 +326,28 @@ public class QuestionManager : MonoBehaviour
     public void OnNextButton()
     {
         if (isGameOver || !isMessagePanelOpen) return;
+
+        if (isDeathMessagePanelOpen)
+        {
+            TriggerGameOver();
+            return;
+        }
+
         messagePanel.SetActive(false);
         isMessagePanelOpen = false;
         NextTurn();
     }
     /// <summary>
-    /// ストレスを増減し、最大値に達したらリザルトへ移動する。
+    /// ストレスを増減する。
     /// </summary>
     private bool ChangeStress(int amount)
     {
         currentStress = Mathf.Clamp(currentStress + amount, 0, maxStress);
         UpdateStressGauge();
+
         Debug.Log($"ストレス: {currentStress}/{maxStress}");
-        if (currentStress < maxStress) return false;
-        ResultData.SolvedQuestionCount =solvedQuestionCount;
-        ResultData.CurrentQuestionNumber =currentQuestionNumber;
-        isGameOver = true;
-        SceneManager.LoadScene(resultSceneName);
-        return true;
+
+        return currentStress >= maxStress;
     }
     private void UpdateStressGauge()
     {
@@ -289,6 +359,7 @@ public class QuestionManager : MonoBehaviour
         {
             stressGauge.SetStress(currentStress, maxStress);
         }
+
         if (stressPercentageText != null)
         {
             int stressPercentage = Mathf.RoundToInt((float)currentStress / maxStress * 100f);
@@ -296,12 +367,178 @@ public class QuestionManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 作業効率を増減する。
+    /// </summary>
     private void ChangeWorkEfficiency(int amount)
     {
         currentWorkEfficiency = Mathf.Clamp(currentWorkEfficiency + amount, 0, 100);
         UpdateWorkGauge();
 
         Debug.Log($"作業効率: {currentWorkEfficiency}%");
+    }
+
+    private DeathCause GetDeathCause()
+    {
+        DeathCause cause = DeathCause.None;
+
+        if (currentStress >= maxStress)
+        {
+            cause |= DeathCause.Stress;
+        }
+
+        if (currentWorkEfficiency <= 0)
+        {
+            cause |= DeathCause.WorkEfficiency;
+        }
+
+        return cause;
+    }
+
+    /// <summary>
+    /// 専用パネルが未設定なら、生存時のパネルを複製して同じ配置を引き継ぐ。
+    /// </summary>
+    private void InitializeDeathMessagePanel()
+    {
+        if (deathMessagePanel == null && messagePanel != null)
+        {
+            deathMessagePanel = Instantiate(
+                messagePanel,
+                messagePanel.transform.parent,
+                false);
+            deathMessagePanel.name = "DeathMessagePanel";
+            deathMessagePanel.transform.SetSiblingIndex(
+                messagePanel.transform.GetSiblingIndex() + 1);
+        }
+
+        if (deathMessagePanel == null)
+        {
+            Debug.LogError("死亡パネルを作成できません。MessagePanelを設定してください。", this);
+            return;
+        }
+
+        if (deathMessagePanelContent == null)
+        {
+            deathMessagePanelContent =
+                deathMessagePanel.GetComponentInChildren<MessagePanelContent>(true);
+        }
+
+        if (deathMessagePanelImage == null)
+        {
+            deathMessagePanelImage = deathMessagePanel.GetComponent<Image>();
+        }
+
+        deathMessagePanel.SetActive(false);
+    }
+
+    private void OpenDeathMessagePanel(
+        DeathCause cause,
+        int stressChange,
+        int workEfficiencyChange)
+    {
+        if (deathMessagePanel == null || deathMessagePanelContent == null)
+        {
+            Debug.LogError("死亡パネルの表示先が設定されていません。", this);
+            TriggerGameOver();
+            return;
+        }
+
+        string deathMessage = GetRandomDeathMessage(cause);
+        deathMessagePanelContent.DeathSetContent(
+            deathResultMessage,
+            deathMessage,
+            stressChange,
+            workEfficiencyChange);
+
+        if (deathMessagePanelImage != null)
+        {
+            deathMessagePanelImage.color = deathPanelColor;
+        }
+
+        if (messagePanel != null)
+        {
+            messagePanel.SetActive(false);
+        }
+
+        isDeathMessagePanelOpen = true;
+        isMessagePanelOpen = true;
+        deathMessagePanel.SetActive(true);
+    }
+
+    private string GetRandomDeathMessage(DeathCause cause)
+    {
+        if (cause == (DeathCause.Stress | DeathCause.WorkEfficiency))
+        {
+            return PickRandomMessage(
+                bothDeathMessages,
+                "ストレスと作業効率が最大になった。"
+            );
+        }
+
+        if (cause == DeathCause.Stress)
+        {
+            return PickRandomMessage(
+                stressDeathMessages,
+                "ストレスが最大になった。"
+            );
+        }
+
+        return PickRandomMessage(
+            workEfficiencyDeathMessages,
+            "作業効率が0になった。"
+        );
+    }
+
+    private static string PickRandomMessage(string[] messages, string fallbackMessage)
+    {
+        if (messages == null || messages.Length == 0)
+        {
+            return fallbackMessage;
+        }
+
+        int validMessageCount = 0;
+        for (int index = 0; index < messages.Length; index++)
+        {
+            if (!string.IsNullOrWhiteSpace(messages[index]))
+            {
+                validMessageCount++;
+            }
+        }
+
+        if (validMessageCount == 0)
+        {
+            return fallbackMessage;
+        }
+
+        int selectedMessageIndex = Random.Range(0, validMessageCount);
+        for (int index = 0; index < messages.Length; index++)
+        {
+            if (string.IsNullOrWhiteSpace(messages[index]))
+            {
+                continue;
+            }
+
+            if (selectedMessageIndex == 0)
+            {
+                return messages[index];
+            }
+
+            selectedMessageIndex--;
+        }
+
+        return fallbackMessage;
+    }
+
+    private bool TriggerGameOver()
+    {
+        if (isGameOver) return false;
+
+        ResultData.SolvedQuestionCount = solvedQuestionCount;
+        ResultData.CurrentQuestionNumber = currentQuestionNumber;
+
+        isGameOver = true;
+        SceneManager.LoadScene(resultSceneName);
+        return true;
     }
 
     private void UpdateWorkGauge()
@@ -332,7 +569,8 @@ public class QuestionManager : MonoBehaviour
         messagePanel.SetActive(true);
     }
 
-    private void SetAIResultMessage(bool aiFailed, int stressChange, int workEfficiencyChange)
+    private void SetAIResultMessage(bool aiFailed, int stressChange, int workEfficiencyChange, int prevStress,
+        int prevEfficiency)
     {
         if (messagePanelContent != null)
         {
@@ -342,10 +580,14 @@ public class QuestionManager : MonoBehaviour
                 : string.Empty;
 
             UpdateMessagePanelContent(
-                panelResult,
-                panelComment,
-                stressChange,
-                workEfficiencyChange);
+                            panelResult,
+                            panelComment,
+                            stressChange,
+                            workEfficiencyChange,
+                            prevStress,
+                            currentStress,
+                            prevEfficiency,
+                            currentWorkEfficiency);
 
             if (messagePanelImage != null)
             {
@@ -387,9 +629,11 @@ public class QuestionManager : MonoBehaviour
     }
 
     private void SetTeacherResultMessage(
-        bool teacherFailed,
-        int stressIncrease,
-        int workEfficiencyChange)
+            bool teacherFailed,
+            int stressIncrease,
+            int workEfficiencyChange,
+            int prevStress,
+            int prevEfficiency)
     {
         if (messagePanelContent != null)
         {
@@ -402,7 +646,11 @@ public class QuestionManager : MonoBehaviour
                 panelResult,
                 panelComment,
                 stressIncrease,
-                workEfficiencyChange);
+                workEfficiencyChange,
+                prevStress,
+                currentStress,
+                prevEfficiency,
+                currentWorkEfficiency);
 
             if (messagePanelImage != null)
             {
@@ -444,10 +692,14 @@ public class QuestionManager : MonoBehaviour
     }
 
     private void UpdateMessagePanelContent(
-        string resultMessage,
+string resultMessage,
         string comment,
         int stressChange,
-        int workEfficiencyChange)
+        int workEfficiencyChange,
+        int previousStress,
+        int currentStress,
+        int previousEfficiency,
+        int currentEfficiency)
     {
         if (messagePanelContent == null)
         {
@@ -456,9 +708,14 @@ public class QuestionManager : MonoBehaviour
         }
 
         messagePanelContent.SetContent(
-            resultMessage,
-            comment,
-            stressChange,
-            workEfficiencyChange);
+                    resultMessage,
+                    comment,
+                    stressChange,
+                    workEfficiencyChange,
+                    previousStress,
+                    currentStress,
+                    maxStress,
+                    previousEfficiency,
+                    currentEfficiency);
     }
 }

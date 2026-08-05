@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 
 public class TeacherUI : MonoBehaviour
 {
@@ -24,7 +23,7 @@ public class TeacherUI : MonoBehaviour
         }
 
         teacherImage.sprite = teacher.teacherImage;
-        teacherNameText.text = teacher.teacherName;
+        teacherNameText.text = $"名前:{teacher.teacherName}";
         hobbyText.text = teacher.hobby;
     }
     public void UpdateTeacherSlots(TeacherSO[]teachers)
