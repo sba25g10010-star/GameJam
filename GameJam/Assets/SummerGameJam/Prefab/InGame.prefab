@@ -3209,7 +3209,7 @@ MonoBehaviour:
   messagePanel: {fileID: 2135040276520484328}
   messagePanelImage: {fileID: 4903707267149958927}
   messageText: {fileID: 2208548217881264162}
-  messagePanelContent: {fileID: 0}
+  messagePanelContent: {fileID: 2558479751844346818}
   stressPercentageText: {fileID: 1115168140}
   workPercentageText: {fileID: 1810000004}
   stressGauge: {fileID: 6673303907901913978}
@@ -4258,6 +4258,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a61b7b48117d4376b11c07e8da0ebc5a, type: 3}
+--- !u!114 &2558479751844346818 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 510000003, guid: a61b7b48117d4376b11c07e8da0ebc5a, type: 3}
+  m_PrefabInstance: {fileID: 2558479752215380033}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 149ec45db3223ec42bc7945254af716c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MessagePanelContent
 --- !u!224 &2558479751844346819 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 510000002, guid: a61b7b48117d4376b11c07e8da0ebc5a, type: 3}
