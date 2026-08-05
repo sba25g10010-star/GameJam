@@ -493,7 +493,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 158665d03c496634f87999185fa8acf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResultManager
-  questionCountText: {fileID: 1737465448}
+  solvedQuestionCount: {fileID: 1737465448}
+  questionNumberText: {fileID: 1866822398}
 --- !u!4 &204132145
 Transform:
   m_ObjectHideFlags: 0
@@ -1357,7 +1358,7 @@ GameObject:
   - component: {fileID: 1737465449}
   - component: {fileID: 1737465448}
   m_Layer: 5
-  m_Name: questionCountText
+  m_Name: solvedQuestionText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1383,7 +1384,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u554F\u984C\u6570"
+  m_text: "\u89E3\u3044\u305F"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 73da17b7671c3134ea25c8164fe1679c, type: 2}
   m_sharedMaterial: {fileID: 7787175763585278134, guid: 73da17b7671c3134ea25c8164fe1679c, type: 2}
@@ -1494,7 +1495,7 @@ GameObject:
   - component: {fileID: 1866822399}
   - component: {fileID: 1866822398}
   m_Layer: 5
-  m_Name: questionScoreText
+  m_Name: questionNumberText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1539,7 +1540,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u89E3\u3051\u305F\u554F\u984C\u6570:"
+  m_text: "\u554F\u984C\u6570:"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 73da17b7671c3134ea25c8164fe1679c, type: 2}
   m_sharedMaterial: {fileID: 7787175763585278134, guid: 73da17b7671c3134ea25c8164fe1679c, type: 2}

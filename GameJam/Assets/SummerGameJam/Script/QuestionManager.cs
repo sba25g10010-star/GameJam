@@ -345,7 +345,13 @@ public class QuestionManager : MonoBehaviour
         currentStress = Mathf.Clamp(currentStress + amount, 0, maxStress);
         UpdateStressGauge();
         Debug.Log($"ストレス: {currentStress}/{maxStress}");
-        return currentStress >= maxStress;
+        if (currentStress < maxStress) return false;
+        ResultData.SolvedQuestionCount =solvedQuestionCount;
+        ResultData.CurrentQuestionNumber =currentQuestionNumber;
+        isGameOver = true;
+        SceneManager.LoadScene(resultSceneName);
+        return true;
+
     }
     private void UpdateStressGauge()
     {

@@ -4,9 +4,12 @@ using TMPro;
 public class ResultManager : MonoBehaviour
 {
 
-    [SerializeField] private TextMeshProUGUI questionCountText;
+    [SerializeField] private TextMeshProUGUI solvedQuestionCount;
+    [SerializeField] private TextMeshProUGUI questionNumberText;
     void Start()
     {
-        questionCountText.text = $"{ResultData.SolvedQuestionCount}問";
+        questionNumberText.text = $"{ResultData.CurrentQuestionNumber}問やって";
+        solvedQuestionCount.text = $"{ResultData.SolvedQuestionCount}問正解できた";
+
     }
 }
