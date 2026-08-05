@@ -345,11 +345,7 @@ public class QuestionManager : MonoBehaviour
         currentStress = Mathf.Clamp(currentStress + amount, 0, maxStress);
         UpdateStressGauge();
         Debug.Log($"ストレス: {currentStress}/{maxStress}");
-        if (currentStress < maxStress) return false;
-        ResultData.SolvedQuestionCount = solvedQuestionCount;
-        isGameOver = true;
-        SceneManager.LoadScene(resultSceneName);
-        return true;
+        return currentStress >= maxStress;
     }
     private void UpdateStressGauge()
     {
@@ -408,7 +404,7 @@ public class QuestionManager : MonoBehaviour
                 messagePanel,
                 messagePanel.transform.parent,
                 false);
-            deathMessagePanel.name = "DeathMessagePanel_Yasuda";
+            deathMessagePanel.name = "DeathMessagePanel";
             deathMessagePanel.transform.SetSiblingIndex(
                 messagePanel.transform.GetSiblingIndex() + 1);
         }
