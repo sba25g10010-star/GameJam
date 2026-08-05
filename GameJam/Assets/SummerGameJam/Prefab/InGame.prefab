@@ -3213,8 +3213,8 @@ MonoBehaviour:
   workPercentageText: {fileID: 1810000004}
   stressGauge: {fileID: 6673303907901913978}
   maxStress: 100
-  aiFailureStress: 20
-  aiSuccessRecovery: 35
+  aiFailureStress: 33
+  aiSuccessRecovery: 20
   workGauge: {fileID: 700000001449027815}
   initialWorkEfficiency: 75
   aiSuccessEfficiency: 25
