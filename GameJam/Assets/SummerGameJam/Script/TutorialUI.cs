@@ -8,11 +8,17 @@ public class TutorialUI : MonoBehaviour
 
     void Start()
     {
+
         // 一度ゲームを開始していたら最初から非表示
         if (TitleData.HasPlayed)
         {
             tutorialImage.SetActive(false);
             closeButton.SetActive(false);
+        }
+        else
+        {
+            tutorialImage.SetActive(true);
+            closeButton.SetActive(true);
         }
     }
 
