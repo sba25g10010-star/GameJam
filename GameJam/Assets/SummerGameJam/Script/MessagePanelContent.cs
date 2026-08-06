@@ -60,15 +60,26 @@ public class MessagePanelContent : MonoBehaviour
         }
     }
 
-        public void DeathSetContent(
+    public void DeathSetContent(
         string result,
         string comment,
         int stressChange,
-        int workEfficiencyChange)
+        int workEfficiencyChange,
+        int previousStress,
+        int currentStress,
+        int maxStress,
+        int previousEfficiency,
+        int currentEfficiency)
     {
-        SetText(resultText, result);
-        SetText(commentText, comment);
-        SetText(stressChangeText, $"ストレス {FormatChange(stressChange)}%");
-        SetText(workEfficiencyChangeText, $"作業効率 {FormatChange(workEfficiencyChange)}%");
+        SetContent(
+            result,
+            comment,
+            stressChange,
+            workEfficiencyChange,
+            previousStress,
+            currentStress,
+            maxStress,
+            previousEfficiency,
+            currentEfficiency);
     }
 }
