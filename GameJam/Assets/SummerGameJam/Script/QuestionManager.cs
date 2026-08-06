@@ -178,18 +178,6 @@ public class QuestionManager : MonoBehaviour
         if (isGameOver || isMessagePanelOpen || currentQuestion == null) return;
         int randomValue = Random.Range(0, 100);
         bool aiFailed = randomValue < currentQuestion.failureChance;
-        if (aiFailed)
-        {
-            Debug.Log(
-                $"失敗！確率 {currentQuestion.failureChance}% に対し " +
-                $"{randomValue} を引いた"
-            );
-        }
-        else
-        {
-            Debug.Log($"成功！確率 {currentQuestion.failureChance}% に対し {randomValue} で回避");
-
-        }
         if (!aiFailed)
         {
             solvedQuestionCount++;
@@ -247,15 +235,6 @@ public class QuestionManager : MonoBehaviour
 
         // QuestionSOのCorrect Teacherに登録された先生だけが成功する。
         teacherFailed = !teacherManager.IsCorrectTeacher(currentQuestion);
-
-        if (teacherFailed)
-        {
-            Debug.Log($"{selectedTeacher.teacherName}先生は正解できる先生ではないので失敗！");
-        }
-        else
-        {
-            Debug.Log($"{selectedTeacher.teacherName}先生は正解できる先生なので必ず成功！");
-        }
         if (!teacherFailed)
         {
             solvedQuestionCount++;
@@ -354,7 +333,6 @@ public class QuestionManager : MonoBehaviour
     {
         currentStress = Mathf.Clamp(currentStress + amount, 0, maxStress);
         UpdateStressGauge();
-        Debug.Log($"ストレス: {currentStress}/{maxStress}");
         return currentStress >= maxStress;
 
     }
@@ -383,8 +361,6 @@ public class QuestionManager : MonoBehaviour
     {
         currentWorkEfficiency = Mathf.Clamp(currentWorkEfficiency + amount, 0, 100);
         UpdateWorkGauge();
-
-        Debug.Log($"作業効率: {currentWorkEfficiency}%");
     }
 
     private DeathCause GetDeathCause()
@@ -676,7 +652,6 @@ public class QuestionManager : MonoBehaviour
         }
         if (messageText == null)
         {
-            Debug.Log("messageTextがnullです");
             return;
         }
 
@@ -688,7 +663,6 @@ public class QuestionManager : MonoBehaviour
             comment = commentMaager.GetTeacherComment(currentQuestion, teacherFailed);
         }
 
-        Debug.Log(comment);
         if (!string.IsNullOrEmpty(comment))
         {
             messageText.text = $"{resultMessage}\n{comment}\nストレス {stressIncrease:+#;-#;0}%";
