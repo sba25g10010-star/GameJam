@@ -16,6 +16,10 @@ public class MessagePanelContent : MonoBehaviour
     [SerializeField] private AnimatedStressGauge animatedStressGauge;
     [SerializeField] private AnimatedWorkGauge animatedWorkGauge;
 
+    [Header("アニメーションテキスト参照")]
+    [SerializeField] private AnimatedPercentage animatedStressText;
+    [SerializeField] private AnimatedPercentage animatedWorkText;
+
     /// <summary>
     /// メッセージパネルの内容をセットし、ゲージのアニメーションを開始する
     /// </summary>
@@ -44,6 +48,18 @@ public class MessagePanelContent : MonoBehaviour
         if (animatedWorkGauge != null)
         {
             animatedWorkGauge.StartAnimation(previousEfficiency, currentEfficiency);
+        }
+        
+        if (animatedStressText != null)
+        {
+            int prevStressPercent = Mathf.RoundToInt((float)previousStress / maxStress * 100f);
+            int currStressPercent = Mathf.RoundToInt((float)currentStress / maxStress * 100f);
+            animatedStressText.StartAnimation(prevStressPercent, currStressPercent);
+        }
+
+        if (animatedWorkText != null)
+        {
+            animatedWorkText.StartAnimation(previousEfficiency, currentEfficiency);
         }
     }
 

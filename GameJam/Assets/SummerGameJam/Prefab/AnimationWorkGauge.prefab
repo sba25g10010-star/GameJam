@@ -290,6 +290,7 @@ GameObject:
   - component: {fileID: 3607714510323456305}
   - component: {fileID: 4190919945087016296}
   - component: {fileID: 7692529173126759806}
+  - component: {fileID: 6101082369066049557}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -416,3 +417,17 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6101082369066049557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523409071670815096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cacc10a55b9d04148b4836d3e82754aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimatedPercentage
+  percentageText: {fileID: 7692529173126759806}
+  duration: 0.67
