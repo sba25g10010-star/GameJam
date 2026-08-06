@@ -207,7 +207,12 @@ public class QuestionManager : MonoBehaviour
         DeathCause deathCause = GetDeathCause();
         if (deathCause != DeathCause.None)
         {
-            OpenDeathMessagePanel(deathCause, stressChange, workEfficiencyChange);
+            OpenDeathMessagePanel(
+                deathCause,
+                stressChange,
+                workEfficiencyChange,
+                prevStress,
+                prevEfficiency);
             return;
         }
 
@@ -273,7 +278,12 @@ public class QuestionManager : MonoBehaviour
         DeathCause deathCause = GetDeathCause();
         if (deathCause != DeathCause.None)
         {
-            OpenDeathMessagePanel(deathCause, stressIncrease, workEfficiencyChange);
+            OpenDeathMessagePanel(
+                deathCause,
+                stressIncrease,
+                workEfficiencyChange,
+                prevStress,
+                prevEfficiency);
             return;
         }
 
@@ -345,12 +355,7 @@ public class QuestionManager : MonoBehaviour
         currentStress = Mathf.Clamp(currentStress + amount, 0, maxStress);
         UpdateStressGauge();
         Debug.Log($"ストレス: {currentStress}/{maxStress}");
-        if (currentStress < maxStress) return false;
-        ResultData.SolvedQuestionCount =solvedQuestionCount;
-        ResultData.CurrentQuestionNumber =currentQuestionNumber;
-        isGameOver = true;
-        SceneManager.LoadScene(resultSceneName);
-        return true;
+        return currentStress >= maxStress;
 
     }
     private void UpdateStressGauge()
@@ -438,7 +443,9 @@ public class QuestionManager : MonoBehaviour
     private void OpenDeathMessagePanel(
         DeathCause cause,
         int stressChange,
-        int workEfficiencyChange)
+        int workEfficiencyChange,
+        int previousStress,
+        int previousWorkEfficiency)
     {
         if (deathMessagePanel == null || deathMessagePanelContent == null)
         {
@@ -447,12 +454,19 @@ public class QuestionManager : MonoBehaviour
             return;
         }
 
+        deathMessagePanel.SetActive(true);
+
         string deathMessage = GetRandomDeathMessage(cause);
         deathMessagePanelContent.DeathSetContent(
             deathResultMessage,
             deathMessage,
             stressChange,
-            workEfficiencyChange);
+            workEfficiencyChange,
+            previousStress,
+            currentStress,
+            maxStress,
+            previousWorkEfficiency,
+            currentWorkEfficiency);
 
         if (deathMessagePanelImage != null)
         {
@@ -466,7 +480,6 @@ public class QuestionManager : MonoBehaviour
 
         isDeathMessagePanelOpen = true;
         isMessagePanelOpen = true;
-        deathMessagePanel.SetActive(true);
     }
 
     private string GetRandomDeathMessage(DeathCause cause)
