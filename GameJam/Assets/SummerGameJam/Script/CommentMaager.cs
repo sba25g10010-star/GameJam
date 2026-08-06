@@ -11,7 +11,6 @@ public class CommentMaager : MonoBehaviour
 
     public string GetTeacherComment(QuestionSO question, bool isFailed)
     {
-        Debug.Log("呼ばれた");
         if (question == null) return string.Empty;
 
         return isFailed ? question.missTeacherComment : question.correctTeacherComment;
