@@ -64,13 +64,6 @@ public class TeacherManager : MonoBehaviour
 
         currentSlotTeachers = selectedTeachers;
         teacherUI.UpdateTeacherSlots(currentSlotTeachers);
-
-        Debug.Log($"上：{currentTeacher.teacherName}");
-
-        for (int i = 0; i < currentSlotTeachers.Length; i++)
-        {
-            Debug.Log($"下{i + 1}：{currentSlotTeachers[i].teacherName}");
-        }
     }
     /// <summary>
     /// 下に表示されている3人から、1人をランダムで選ぶ
@@ -98,7 +91,6 @@ public class TeacherManager : MonoBehaviour
         int randomIndex = Random.Range(0, teachers.Length);
         currentTeacher = teachers[randomIndex];
         teacherUI.UpdateTeacherUI(currentTeacher);
-        Debug.Log($"{currentTeacher.teacherName}に変更しました");
     }
 
     /// <summary>
@@ -120,8 +112,6 @@ public class TeacherManager : MonoBehaviour
         }
 
         currentTeacher = teacher;
-
-        Debug.Log($"{currentTeacher.teacherName}に変更しました");
         teacherUI.UpdateTeacherUI(currentTeacher);
     }
     private bool IsSameTeachers(TeacherSO[] newTeachers)
